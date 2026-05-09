@@ -40,7 +40,7 @@ export const Route = createFileRoute("/restaurants/$id")({
 });
 
 function RestaurantDetail() {
-  const restaurant = Route.useLoaderData();
+  const restaurant = Route.useLoaderData() as Restaurant;
   const platforms = Object.keys(restaurant.popularPrice) as Platform[];
 
   return (
