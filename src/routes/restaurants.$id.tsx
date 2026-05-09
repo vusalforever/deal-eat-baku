@@ -3,7 +3,7 @@ import { ArrowLeft, Star, Clock, Bike, ExternalLink, TrendingDown } from "lucide
 import { Navbar } from "@/components/Navbar";
 import { Button } from "@/components/ui/button";
 import { PriceBadge } from "@/components/PriceBadge";
-import { cheapestPlatform, getRestaurant, platformMeta, type Platform } from "@/data/restaurants";
+import { cheapestPlatform, getRestaurant, platformMeta, type Platform, type Restaurant } from "@/data/restaurants";
 
 export const Route = createFileRoute("/restaurants/$id")({
   head: ({ params }) => {
@@ -15,7 +15,7 @@ export const Route = createFileRoute("/restaurants/$id")({
       ],
     };
   },
-  loader: ({ params }) => {
+  loader: ({ params }): Restaurant => {
     const r = getRestaurant(params.id);
     if (!r) throw notFound();
     return r;
