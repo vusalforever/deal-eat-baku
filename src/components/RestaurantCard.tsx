@@ -1,12 +1,14 @@
 import { Link } from "@tanstack/react-router";
-import { Clock, Star, Bike } from "lucide-react";
-import { cheapestPlatform, type Restaurant, type Platform } from "@/data/restaurants";
+import { Clock, Star, Bike, ExternalLink } from "lucide-react";
+import { cheapestPlatform, platformMeta, type Restaurant, type Platform } from "@/data/restaurants";
 import { PriceBadge } from "./PriceBadge";
 
 export function RestaurantCard({ restaurant }: { restaurant: Restaurant }) {
   const cheapest = cheapestPlatform(restaurant.popularPrice);
   const minFee = Math.min(...Object.values(restaurant.fees) as number[]);
   const platforms = Object.keys(restaurant.popularPrice) as Platform[];
+  const cheapestUrl = cheapest ? platformMeta[cheapest].url : "#";
+  const cheapestLabel = cheapest ? platformMeta[cheapest].label : "";
 
   return (
     <Link
