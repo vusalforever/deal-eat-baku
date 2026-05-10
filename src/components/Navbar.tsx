@@ -54,6 +54,7 @@ export function Navbar({
           </Link>
         </nav>
       </div>
+      <CategoryBar active={activeCategory} onSelect={onCategorySelect} />
     </header>
   );
 }
