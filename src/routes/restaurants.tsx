@@ -4,9 +4,15 @@ import { Clock, Bike, Filter } from "lucide-react";
 import { Navbar } from "@/components/Navbar";
 import { MapView } from "@/components/MapView";
 import { RestaurantCard } from "@/components/RestaurantCard";
-import { cuisines, restaurants } from "@/data/restaurants";
+import { cuisines, restaurants, type CategoryKey } from "@/data/restaurants";
+
+type RestaurantsSearch = { category?: CategoryKey };
 
 export const Route = createFileRoute("/restaurants")({
+  validateSearch: (search: Record<string, unknown>): RestaurantsSearch => {
+    const cat = typeof search.category === "string" ? (search.category as CategoryKey) : undefined;
+    return { category: cat };
+  },
   head: () => ({
     meta: [
       { title: "Restoranlar — DealEat Bakı" },
