@@ -21,10 +21,32 @@ export type MenuItem = {
   prices: Partial<Record<Platform, number>>;
 };
 
+export type CategoryKey =
+  | "Burger"
+  | "Pizza"
+  | "Döner"
+  | "Kabab"
+  | "Qəhvə"
+  | "Şirniyyat"
+  | "Balıq"
+  | "Toyuq";
+
+export const categories: { key: CategoryKey; emoji: string; label: string }[] = [
+  { key: "Burger", emoji: "🍔", label: "Burger" },
+  { key: "Pizza", emoji: "🍕", label: "Pizza" },
+  { key: "Döner", emoji: "🥙", label: "Döner" },
+  { key: "Kabab", emoji: "🔥", label: "Kabab" },
+  { key: "Qəhvə", emoji: "☕", label: "Qəhvə" },
+  { key: "Şirniyyat", emoji: "🍰", label: "Şirniyyat" },
+  { key: "Balıq", emoji: "🐟", label: "Balıq" },
+  { key: "Toyuq", emoji: "🍗", label: "Toyuq" },
+];
+
 export type Restaurant = {
   id: string;
   name: string;
   cuisine: string;
+  categories: CategoryKey[];
   rating: number;
   deliveryMin: number;
   image: string;
