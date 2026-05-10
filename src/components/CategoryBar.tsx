@@ -22,7 +22,10 @@ export function CategoryBar({
   return (
     <div className="border-b border-border/60 bg-background/85 backdrop-blur-xl">
       <div className="container mx-auto px-4">
-        <div className="flex gap-2 overflow-x-auto py-3 scrollbar-none -mx-1 px-1">
+        <div
+          className="flex gap-2 overflow-x-auto py-3 -mx-1 px-1"
+          style={{ scrollbarWidth: "none" }}
+        >
           {categories.map((c) => {
             const isActive = active === c.key;
             return (
