@@ -2,8 +2,20 @@ import { Link } from "@tanstack/react-router";
 import { Search, MapPin, SlidersHorizontal } from "lucide-react";
 import { Logo } from "./Logo";
 import { Button } from "./ui/button";
+import { CategoryBar } from "./CategoryBar";
+import type { CategoryKey } from "@/data/restaurants";
 
-export function Navbar({ address, onAddressChange }: { address?: string; onAddressChange?: (v: string) => void }) {
+export function Navbar({
+  address,
+  onAddressChange,
+  activeCategory,
+  onCategorySelect,
+}: {
+  address?: string;
+  onAddressChange?: (v: string) => void;
+  activeCategory?: CategoryKey;
+  onCategorySelect?: (key: CategoryKey | undefined) => void;
+}) {
   return (
     <header className="sticky top-0 z-40 w-full border-b border-border/60 bg-background/85 backdrop-blur-xl">
       <div className="container mx-auto flex h-16 items-center gap-3 px-4">
