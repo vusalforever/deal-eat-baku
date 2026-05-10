@@ -52,6 +52,12 @@ export function Navbar({
           >
             Restoranlar
           </Link>
+          <Link
+            to="/ai"
+            className="px-3 py-1.5 text-sm rounded-full text-muted-foreground hover:text-foreground transition data-[status=active]:text-primary data-[status=active]:bg-primary/10"
+          >
+            ✨ AI
+          </Link>
         </nav>
       </div>
       <CategoryBar active={activeCategory} onSelect={onCategorySelect} />
