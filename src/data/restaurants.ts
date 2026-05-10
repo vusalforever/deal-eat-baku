@@ -21,10 +21,32 @@ export type MenuItem = {
   prices: Partial<Record<Platform, number>>;
 };
 
+export type CategoryKey =
+  | "Burger"
+  | "Pizza"
+  | "Döner"
+  | "Kabab"
+  | "Qəhvə"
+  | "Şirniyyat"
+  | "Balıq"
+  | "Toyuq";
+
+export const categories: { key: CategoryKey; emoji: string; label: string }[] = [
+  { key: "Burger", emoji: "🍔", label: "Burger" },
+  { key: "Pizza", emoji: "🍕", label: "Pizza" },
+  { key: "Döner", emoji: "🥙", label: "Döner" },
+  { key: "Kabab", emoji: "🔥", label: "Kabab" },
+  { key: "Qəhvə", emoji: "☕", label: "Qəhvə" },
+  { key: "Şirniyyat", emoji: "🍰", label: "Şirniyyat" },
+  { key: "Balıq", emoji: "🐟", label: "Balıq" },
+  { key: "Toyuq", emoji: "🍗", label: "Toyuq" },
+];
+
 export type Restaurant = {
   id: string;
   name: string;
   cuisine: string;
+  categories: CategoryKey[];
   rating: number;
   deliveryMin: number;
   image: string;
@@ -45,6 +67,7 @@ export const restaurants: Restaurant[] = [
     rating: 4.8,
     deliveryMin: 25,
     tagline: "Klassik plov və kabab",
+    categories: ["Kabab"] ,
     image: plov,
     fees: { wolt: 2.5, bolt: 1.9, yango: 2.2 },
     popularPrice: { wolt: 14.5, bolt: 12.9, yango: 13.8 },
@@ -73,6 +96,7 @@ export const restaurants: Restaurant[] = [
     rating: 4.6,
     deliveryMin: 20,
     tagline: "Smashed burgerlər və crinkle fries",
+    categories: ["Burger"] ,
     image: burger,
     fees: { wolt: 1.9, bolt: 2.5, yango: 2.0 },
     popularPrice: { wolt: 9.9, bolt: 10.5, yango: 9.5 },
@@ -101,6 +125,7 @@ export const restaurants: Restaurant[] = [
     rating: 4.7,
     deliveryMin: 30,
     tagline: "Odun sobasında bişmiş pizza",
+    categories: ["Pizza"] ,
     image: pizza,
     fees: { wolt: 2.9, bolt: 2.2, yango: 2.5 },
     popularPrice: { wolt: 15.0, bolt: 14.5, yango: 15.5 },
@@ -129,6 +154,7 @@ export const restaurants: Restaurant[] = [
     rating: 4.5,
     deliveryMin: 35,
     tagline: "Təzə suşi və ramen",
+    categories: ["Balıq"] ,
     image: sushi,
     fees: { wolt: 3.5, bolt: 3.0, yango: 3.2 },
     popularPrice: { wolt: 24.0, bolt: 22.5, yango: 23.0 },
@@ -157,6 +183,7 @@ export const restaurants: Restaurant[] = [
     rating: 4.4,
     deliveryMin: 18,
     tagline: "Toyuq və mal şavərması",
+    categories: ["Döner", "Toyuq"] ,
     image: shawarma,
     fees: { wolt: 1.5, bolt: 1.9, yango: 1.7 },
     popularPrice: { wolt: 6.5, bolt: 6.9, yango: 6.0 },
@@ -178,6 +205,7 @@ export const restaurants: Restaurant[] = [
     rating: 4.9,
     deliveryMin: 40,
     tagline: "Premium kabab və tikə",
+    categories: ["Kabab"] ,
     image: kebab,
     fees: { wolt: 2.9, bolt: 2.5, yango: 2.7 },
     popularPrice: { wolt: 19.0, bolt: 18.5, yango: 19.5 },
