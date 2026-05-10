@@ -23,6 +23,8 @@ export const Route = createFileRoute("/restaurants")({
 });
 
 function RestaurantsPage() {
+  const navigate = Route.useNavigate();
+  const { category } = Route.useSearch();
   const [address, setAddress] = useState("Nizami küç. 25, Bakı");
   const [cuisine, setCuisine] = useState("Hamısı");
   const [maxTime, setMaxTime] = useState(60);
@@ -32,16 +34,24 @@ function RestaurantsPage() {
   const filtered = useMemo(() => {
     return restaurants.filter((r) => {
       if (cuisine !== "Hamısı" && r.cuisine !== cuisine) return false;
+      if (category && !r.categories.includes(category)) return false;
       if (r.deliveryMin > maxTime) return false;
       const minFee = Math.min(...(Object.values(r.fees) as number[]));
       if (minFee > maxFee) return false;
       return true;
     });
-  }, [cuisine, maxTime, maxFee]);
+  }, [cuisine, category, maxTime, maxFee]);
 
   return (
     <div className="min-h-screen bg-background">
-      <Navbar address={address} onAddressChange={setAddress} />
+      <Navbar
+        address={address}
+        onAddressChange={setAddress}
+        activeCategory={category}
+        onCategorySelect={(key) =>
+          navigate({ search: key ? { category: key } : {} })
+        }
+      />
 
       <div className="container mx-auto px-4 py-6 md:py-8">
         {/* Map */}
