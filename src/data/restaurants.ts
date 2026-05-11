@@ -60,6 +60,19 @@ export type Restaurant = {
   menu: MenuItem[];
   // map coordinates (mocked, relative %)
   coords: { x: number; y: number };
+  // real-world Baku coordinates
+  latlng: [number, number];
+};
+
+export const categoryEmoji: Record<CategoryKey, string> = {
+  Burger: "🍔",
+  Pizza: "🍕",
+  Döner: "🥙",
+  Kabab: "🔥",
+  Qəhvə: "☕",
+  Şirniyyat: "🍰",
+  Balıq: "🐟",
+  Toyuq: "🍗",
 };
 
 export const restaurants: Restaurant[] = [
