@@ -4,6 +4,9 @@ import pizza from "@/assets/dish-pizza.jpg";
 import sushi from "@/assets/dish-sushi.jpg";
 import kebab from "@/assets/dish-kebab.jpg";
 import shawarma from "@/assets/dish-shawarma.jpg";
+import coffee from "@/assets/dish-coffee.jpg";
+import dessert from "@/assets/dish-dessert.jpg";
+import chicken from "@/assets/dish-chicken.jpg";
 
 export type Platform = "wolt" | "bolt" | "yango";
 
