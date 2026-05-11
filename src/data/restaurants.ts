@@ -4,6 +4,9 @@ import pizza from "@/assets/dish-pizza.jpg";
 import sushi from "@/assets/dish-sushi.jpg";
 import kebab from "@/assets/dish-kebab.jpg";
 import shawarma from "@/assets/dish-shawarma.jpg";
+import coffee from "@/assets/dish-coffee.jpg";
+import dessert from "@/assets/dish-dessert.jpg";
+import chicken from "@/assets/dish-chicken.jpg";
 
 export type Platform = "wolt" | "bolt" | "yango";
 
@@ -205,7 +208,7 @@ export const restaurants: Restaurant[] = [
     rating: 4.9,
     deliveryMin: 40,
     tagline: "Premium kabab və tikə",
-    categories: ["Kabab"] ,
+    categories: ["Kabab", "Toyuq"],
     image: kebab,
     fees: { wolt: 2.9, bolt: 2.5, yango: 2.7 },
     popularPrice: { wolt: 19.0, bolt: 18.5, yango: 19.5 },
@@ -220,9 +223,75 @@ export const restaurants: Restaurant[] = [
       },
     ],
   },
+  {
+    id: "coffeelab",
+    name: "Coffee Lab Baku",
+    cuisine: "Kafe",
+    rating: 4.7,
+    deliveryMin: 15,
+    tagline: "Specialty qəhvə və croissant",
+    categories: ["Qəhvə"],
+    image: coffee,
+    fees: { wolt: 1.5, bolt: 1.7, yango: 1.4 },
+    popularPrice: { wolt: 5.5, bolt: 5.9, yango: 5.2 },
+    coords: { x: 48, y: 48 },
+    menu: [
+      {
+        id: "latte",
+        name: "Flat White",
+        description: "Double espresso, mikroköpük süd",
+        image: coffee,
+        prices: { wolt: 5.5, bolt: 5.9, yango: 5.2 },
+      },
+    ],
+  },
+  {
+    id: "shirniyyatevi",
+    name: "Şirniyyat Evi",
+    cuisine: "Şirniyyat",
+    rating: 4.8,
+    deliveryMin: 22,
+    tagline: "Paxlava, şəkərbura və tortlar",
+    categories: ["Şirniyyat", "Qəhvə"],
+    image: dessert,
+    fees: { wolt: 2.0, bolt: 1.8, yango: 1.9 },
+    popularPrice: { wolt: 7.5, bolt: 6.9, yango: 7.2 },
+    coords: { x: 62, y: 72 },
+    menu: [
+      {
+        id: "paxlava",
+        name: "Bakı Paxlavası",
+        description: "Klassik qoz və bal şərbəti ilə",
+        image: dessert,
+        prices: { wolt: 7.5, bolt: 6.9, yango: 7.2 },
+      },
+    ],
+  },
+  {
+    id: "chickenhouse",
+    name: "Chicken House",
+    cuisine: "Fast Food",
+    rating: 4.5,
+    deliveryMin: 25,
+    tagline: "Krunch toyuq və qanadlar",
+    categories: ["Toyuq", "Burger"],
+    image: chicken,
+    fees: { wolt: 2.0, bolt: 2.2, yango: 1.8 },
+    popularPrice: { wolt: 11.5, bolt: 10.9, yango: 11.0 },
+    coords: { x: 35, y: 22 },
+    menu: [
+      {
+        id: "wings",
+        name: "Hot Wings (8 əd)",
+        description: "Acılı sous, ranch dip",
+        image: chicken,
+        prices: { wolt: 11.5, bolt: 10.9, yango: 11.0 },
+      },
+    ],
+  },
 ];
 
-export const cuisines = ["Hamısı", "Azərbaycan", "Burger", "İtalyan", "Yapon", "Fast Food"];
+export const cuisines = ["Hamısı", "Azərbaycan", "Burger", "İtalyan", "Yapon", "Fast Food", "Kafe", "Şirniyyat"];
 
 export function cheapestPlatform(prices: Partial<Record<Platform, number>>): Platform | null {
   const entries = Object.entries(prices) as [Platform, number][];
