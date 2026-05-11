@@ -28,7 +28,7 @@ function Landing() {
 
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
-    navigate({ to: "/restaurants" });
+    navigate({ to: "/restaurants", search: { address } });
   };
 
   return (

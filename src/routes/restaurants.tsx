@@ -1,17 +1,19 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Clock, Bike, Filter } from "lucide-react";
+import { toast } from "sonner";
 import { Navbar } from "@/components/Navbar";
 import { MapView } from "@/components/MapView";
 import { RestaurantCard } from "@/components/RestaurantCard";
 import { cuisines, restaurants, type CategoryKey } from "@/data/restaurants";
 
-type RestaurantsSearch = { category?: CategoryKey };
+type RestaurantsSearch = { category?: CategoryKey; address?: string };
 
 export const Route = createFileRoute("/restaurants")({
   validateSearch: (search: Record<string, unknown>): RestaurantsSearch => {
     const cat = typeof search.category === "string" ? (search.category as CategoryKey) : undefined;
-    return { category: cat };
+    const addr = typeof search.address === "string" ? search.address : undefined;
+    return { category: cat, address: addr };
   },
   head: () => ({
     meta: [
@@ -22,14 +24,66 @@ export const Route = createFileRoute("/restaurants")({
   component: RestaurantsPage,
 });
 
+async function geocodeBaku(query: string): Promise<[number, number] | null> {
+  const q = encodeURIComponent(`${query}, Baku, Azerbaijan`);
+  const url = `https://nominatim.openstreetmap.org/search?q=${q}&format=json&limit=1&countrycodes=az`;
+  try {
+    const res = await fetch(url, { headers: { Accept: "application/json" } });
+    const data = (await res.json()) as Array<{ lat: string; lon: string }>;
+    if (!data.length) return null;
+    return [parseFloat(data[0].lat), parseFloat(data[0].lon)];
+  } catch {
+    return null;
+  }
+}
+
 function RestaurantsPage() {
   const navigate = Route.useNavigate();
-  const { category } = Route.useSearch();
-  const [address, setAddress] = useState("Nizami küç. 25, Bakı");
+  const { category, address: addrParam } = Route.useSearch();
+  const [address, setAddress] = useState(addrParam ?? "Nizami küç. 25, Bakı");
+  const [center, setCenter] = useState<[number, number] | undefined>();
+  const [locating, setLocating] = useState(false);
   const [cuisine, setCuisine] = useState("Hamısı");
   const [maxTime, setMaxTime] = useState(60);
   const [maxFee, setMaxFee] = useState(5);
   const [hovered, setHovered] = useState<string | undefined>();
+
+  const handleSubmit = async (q: string) => {
+    const result = await geocodeBaku(q);
+    if (result) {
+      setCenter(result);
+      toast.success(`Yer tapıldı: ${q}`);
+    } else {
+      toast.error("Yer tapılmadı. Başqa ad sınayın.");
+    }
+  };
+
+  const handleLocate = () => {
+    if (!navigator.geolocation) {
+      toast.error("Brauzeriniz GPS dəstəkləmir.");
+      return;
+    }
+    setLocating(true);
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        setCenter([pos.coords.latitude, pos.coords.longitude]);
+        setAddress("Mənim yerim");
+        setLocating(false);
+        toast.success("Yeriniz tapıldı");
+      },
+      () => {
+        setLocating(false);
+        toast.error("Yer alına bilmədi.");
+      },
+      { enableHighAccuracy: true, timeout: 10000 }
+    );
+  };
+
+  // Auto-geocode when address arrives via URL param
+  useEffect(() => {
+    if (addrParam) handleSubmit(addrParam);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [addrParam]);
 
   const filtered = useMemo(() => {
     return restaurants.filter((r) => {
@@ -47,16 +101,19 @@ function RestaurantsPage() {
       <Navbar
         address={address}
         onAddressChange={setAddress}
+        onAddressSubmit={handleSubmit}
+        onLocate={handleLocate}
+        locating={locating}
         activeCategory={category}
         onCategorySelect={(key) =>
-          navigate({ search: key ? { category: key } : {} })
+          navigate({ search: (prev: RestaurantsSearch) => ({ ...prev, category: key }) })
         }
       />
 
       <div className="container mx-auto px-4 py-6 md:py-8">
         {/* Map */}
         <div className="mb-6">
-          <MapView activeId={hovered} />
+          <MapView activeId={hovered} center={center} restaurants={filtered} />
         </div>
 
         {/* Filters */}
