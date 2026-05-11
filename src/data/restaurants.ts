@@ -88,6 +88,7 @@ export const restaurants: Restaurant[] = [
     fees: { wolt: 2.5, bolt: 1.9, yango: 2.2 },
     popularPrice: { wolt: 14.5, bolt: 12.9, yango: 13.8 },
     coords: { x: 28, y: 38 },
+    latlng: [40.3667, 49.8352],
     menu: [
       {
         id: "plov",
@@ -117,6 +118,7 @@ export const restaurants: Restaurant[] = [
     fees: { wolt: 1.9, bolt: 2.5, yango: 2.0 },
     popularPrice: { wolt: 9.9, bolt: 10.5, yango: 9.5 },
     coords: { x: 55, y: 25 },
+    latlng: [40.3793, 49.8492],
     menu: [
       {
         id: "classic",
@@ -146,6 +148,7 @@ export const restaurants: Restaurant[] = [
     fees: { wolt: 2.9, bolt: 2.2, yango: 2.5 },
     popularPrice: { wolt: 15.0, bolt: 14.5, yango: 15.5 },
     coords: { x: 70, y: 55 },
+    latlng: [40.385, 49.82],
     menu: [
       {
         id: "marg",
@@ -175,6 +178,7 @@ export const restaurants: Restaurant[] = [
     fees: { wolt: 3.5, bolt: 3.0, yango: 3.2 },
     popularPrice: { wolt: 24.0, bolt: 22.5, yango: 23.0 },
     coords: { x: 40, y: 65 },
+    latlng: [40.4093, 49.8671],
     menu: [
       {
         id: "phila",
@@ -204,6 +208,7 @@ export const restaurants: Restaurant[] = [
     fees: { wolt: 1.5, bolt: 1.9, yango: 1.7 },
     popularPrice: { wolt: 6.5, bolt: 6.9, yango: 6.0 },
     coords: { x: 18, y: 70 },
+    latlng: [40.3735, 49.855],
     menu: [
       {
         id: "chick",
@@ -226,6 +231,7 @@ export const restaurants: Restaurant[] = [
     fees: { wolt: 2.9, bolt: 2.5, yango: 2.7 },
     popularPrice: { wolt: 19.0, bolt: 18.5, yango: 19.5 },
     coords: { x: 82, y: 35 },
+    latlng: [40.403, 49.88],
     menu: [
       {
         id: "tikə",
@@ -248,6 +254,7 @@ export const restaurants: Restaurant[] = [
     fees: { wolt: 1.5, bolt: 1.7, yango: 1.4 },
     popularPrice: { wolt: 5.5, bolt: 5.9, yango: 5.2 },
     coords: { x: 48, y: 48 },
+    latlng: [40.372, 49.8385],
     menu: [
       {
         id: "latte",
@@ -270,6 +277,7 @@ export const restaurants: Restaurant[] = [
     fees: { wolt: 2.0, bolt: 1.8, yango: 1.9 },
     popularPrice: { wolt: 7.5, bolt: 6.9, yango: 7.2 },
     coords: { x: 62, y: 72 },
+    latlng: [40.39, 49.81],
     menu: [
       {
         id: "paxlava",
@@ -292,6 +300,7 @@ export const restaurants: Restaurant[] = [
     fees: { wolt: 2.0, bolt: 2.2, yango: 1.8 },
     popularPrice: { wolt: 11.5, bolt: 10.9, yango: 11.0 },
     coords: { x: 35, y: 22 },
+    latlng: [40.385, 49.85],
     menu: [
       {
         id: "wings",
