@@ -289,8 +289,9 @@ export const restaurants: Restaurant[] = [
       },
     ],
   },
+];
 
-export const cuisines = ["Hamısı", "Azərbaycan", "Burger", "İtalyan", "Yapon", "Fast Food"];
+export const cuisines = ["Hamısı", "Azərbaycan", "Burger", "İtalyan", "Yapon", "Fast Food", "Kafe", "Şirniyyat"];
 
 export function cheapestPlatform(prices: Partial<Record<Platform, number>>): Platform | null {
   const entries = Object.entries(prices) as [Platform, number][];
