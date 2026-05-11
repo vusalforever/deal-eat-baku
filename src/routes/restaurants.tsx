@@ -106,7 +106,7 @@ function RestaurantsPage() {
         locating={locating}
         activeCategory={category}
         onCategorySelect={(key) =>
-          navigate({ search: (prev) => ({ ...prev, category: key }) })
+          navigate({ search: (prev: RestaurantsSearch) => ({ ...prev, category: key }) })
         }
       />
 
