@@ -239,6 +239,49 @@ function RestaurantsPage() {
           </div>
         )}
       </div>
+
+      <Dialog
+        open={!!picked}
+        onOpenChange={(o) => {
+          if (!o) {
+            setPicked(null);
+            setSpotlightId(undefined);
+          }
+        }}
+      >
+        <DialogContent className="sm:max-w-md text-center">
+          <DialogHeader>
+            <div className="mx-auto text-6xl mb-2 animate-bounce">🎲</div>
+            <DialogTitle className="font-display text-2xl">
+              Bu gün sənin seçimin
+            </DialogTitle>
+            <DialogDescription className="text-base">
+              {picked && pickedMeta ? (
+                <>
+                  <span className="block text-2xl font-bold text-foreground mt-3">
+                    {picked.name}
+                  </span>
+                  <span className="block mt-2 text-muted-foreground">
+                    <span className="font-semibold text-primary">{pickedMeta.label}</span>
+                    -dan sifariş ver!
+                  </span>
+                </>
+              ) : null}
+            </DialogDescription>
+          </DialogHeader>
+          {picked && pickedMeta && (
+            <a
+              href={pickedMeta.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-2 inline-flex items-center justify-center gap-2 rounded-full bg-primary text-primary-foreground font-semibold py-3 px-6 hover:opacity-90 transition shadow-[var(--shadow-glow)]"
+            >
+              Sifariş et — {pickedMeta.label}
+              <ExternalLink className="size-4" />
+            </a>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
