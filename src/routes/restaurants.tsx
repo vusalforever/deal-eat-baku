@@ -1,11 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useMemo, useState } from "react";
-import { Clock, Bike, Filter } from "lucide-react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { Clock, Bike, Filter, ExternalLink } from "lucide-react";
 import { toast } from "sonner";
 import { Navbar } from "@/components/Navbar";
 import { MapView } from "@/components/MapView";
 import { RestaurantCard } from "@/components/RestaurantCard";
-import { cuisines, restaurants, type CategoryKey } from "@/data/restaurants";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { cuisines, restaurants, cheapestPlatform, platformMeta, type CategoryKey, type Restaurant } from "@/data/restaurants";
 
 type RestaurantsSearch = { category?: CategoryKey; address?: string };
 
@@ -96,6 +97,43 @@ function RestaurantsPage() {
     });
   }, [cuisine, category, maxTime, maxFee]);
 
+  const [spotlightId, setSpotlightId] = useState<string | undefined>();
+  const [deciding, setDeciding] = useState(false);
+  const [picked, setPicked] = useState<Restaurant | null>(null);
+  const cardRefs = useRef<Record<string, HTMLDivElement | null>>({});
+
+  const handleDecide = () => {
+    if (!filtered.length || deciding) {
+      if (!filtered.length) toast.error("Seçim üçün restoran yoxdur.");
+      return;
+    }
+    setDeciding(true);
+    setPicked(null);
+    const finalIdx = Math.floor(Math.random() * filtered.length);
+    let i = 0;
+    const total = 16 + finalIdx;
+    const tick = () => {
+      const idx = i % filtered.length;
+      setSpotlightId(filtered[idx].id);
+      i++;
+      if (i <= total) {
+        setTimeout(tick, 80 + i * 12);
+      } else {
+        const chosen = filtered[finalIdx];
+        setSpotlightId(chosen.id);
+        cardRefs.current[chosen.id]?.scrollIntoView({ behavior: "smooth", block: "center" });
+        setTimeout(() => {
+          setPicked(chosen);
+          setDeciding(false);
+        }, 600);
+      }
+    };
+    tick();
+  };
+
+  const pickedCheapest = picked ? cheapestPlatform(picked.popularPrice) : null;
+  const pickedMeta = pickedCheapest ? platformMeta[pickedCheapest] : null;
+
   return (
     <div className="min-h-screen bg-background">
       <Navbar
@@ -108,6 +146,8 @@ function RestaurantsPage() {
         onCategorySelect={(key) =>
           navigate({ search: (prev: RestaurantsSearch) => ({ ...prev, category: key }) })
         }
+        onDecide={handleDecide}
+        deciding={deciding}
       />
 
       <div className="container mx-auto px-4 py-6 md:py-8">
@@ -173,11 +213,24 @@ function RestaurantsPage() {
         </div>
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-          {filtered.map((r) => (
-            <div key={r.id} onMouseEnter={() => setHovered(r.id)} onMouseLeave={() => setHovered(undefined)}>
-              <RestaurantCard restaurant={r} />
-            </div>
-          ))}
+          {filtered.map((r) => {
+            const isSpot = spotlightId === r.id;
+            return (
+              <div
+                key={r.id}
+                ref={(el) => { cardRefs.current[r.id] = el; }}
+                onMouseEnter={() => setHovered(r.id)}
+                onMouseLeave={() => setHovered(undefined)}
+                className={`rounded-3xl transition-all duration-200 ${
+                  isSpot
+                    ? "ring-4 ring-primary ring-offset-2 ring-offset-background scale-[1.03] shadow-[var(--shadow-glow)] animate-pulse"
+                    : ""
+                }`}
+              >
+                <RestaurantCard restaurant={r} />
+              </div>
+            );
+          })}
         </div>
 
         {filtered.length === 0 && (
@@ -186,6 +239,49 @@ function RestaurantsPage() {
           </div>
         )}
       </div>
+
+      <Dialog
+        open={!!picked}
+        onOpenChange={(o) => {
+          if (!o) {
+            setPicked(null);
+            setSpotlightId(undefined);
+          }
+        }}
+      >
+        <DialogContent className="sm:max-w-md text-center">
+          <DialogHeader>
+            <div className="mx-auto text-6xl mb-2 animate-bounce">🎲</div>
+            <DialogTitle className="font-display text-2xl">
+              Bu gün sənin seçimin
+            </DialogTitle>
+            <DialogDescription className="text-base">
+              {picked && pickedMeta ? (
+                <>
+                  <span className="block text-2xl font-bold text-foreground mt-3">
+                    {picked.name}
+                  </span>
+                  <span className="block mt-2 text-muted-foreground">
+                    <span className="font-semibold text-primary">{pickedMeta.label}</span>
+                    -dan sifariş ver!
+                  </span>
+                </>
+              ) : null}
+            </DialogDescription>
+          </DialogHeader>
+          {picked && pickedMeta && (
+            <a
+              href={pickedMeta.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-2 inline-flex items-center justify-center gap-2 rounded-full bg-primary text-primary-foreground font-semibold py-3 px-6 hover:opacity-90 transition shadow-[var(--shadow-glow)]"
+            >
+              Sifariş et — {pickedMeta.label}
+              <ExternalLink className="size-4" />
+            </a>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
