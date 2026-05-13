@@ -97,6 +97,43 @@ function RestaurantsPage() {
     });
   }, [cuisine, category, maxTime, maxFee]);
 
+  const [spotlightId, setSpotlightId] = useState<string | undefined>();
+  const [deciding, setDeciding] = useState(false);
+  const [picked, setPicked] = useState<Restaurant | null>(null);
+  const cardRefs = useRef<Record<string, HTMLDivElement | null>>({});
+
+  const handleDecide = () => {
+    if (!filtered.length || deciding) {
+      if (!filtered.length) toast.error("Seçim üçün restoran yoxdur.");
+      return;
+    }
+    setDeciding(true);
+    setPicked(null);
+    const finalIdx = Math.floor(Math.random() * filtered.length);
+    let i = 0;
+    const total = 16 + finalIdx;
+    const tick = () => {
+      const idx = i % filtered.length;
+      setSpotlightId(filtered[idx].id);
+      i++;
+      if (i <= total) {
+        setTimeout(tick, 80 + i * 12);
+      } else {
+        const chosen = filtered[finalIdx];
+        setSpotlightId(chosen.id);
+        cardRefs.current[chosen.id]?.scrollIntoView({ behavior: "smooth", block: "center" });
+        setTimeout(() => {
+          setPicked(chosen);
+          setDeciding(false);
+        }, 600);
+      }
+    };
+    tick();
+  };
+
+  const pickedCheapest = picked ? cheapestPlatform(picked.popularPrice) : null;
+  const pickedMeta = pickedCheapest ? platformMeta[pickedCheapest] : null;
+
   return (
     <div className="min-h-screen bg-background">
       <Navbar
@@ -109,6 +146,8 @@ function RestaurantsPage() {
         onCategorySelect={(key) =>
           navigate({ search: (prev: RestaurantsSearch) => ({ ...prev, category: key }) })
         }
+        onDecide={handleDecide}
+        deciding={deciding}
       />
 
       <div className="container mx-auto px-4 py-6 md:py-8">
