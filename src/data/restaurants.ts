@@ -27,22 +27,28 @@ export type MenuItem = {
 export type CategoryKey =
   | "Burger"
   | "Pizza"
+  | "Qəhvə"
   | "Döner"
   | "Kabab"
-  | "Qəhvə"
+  | "Pide"
   | "Şirniyyat"
+  | "Çörək"
   | "Balıq"
-  | "Toyuq";
+  | "Toyuq"
+  | "Fast Food";
 
-export const categories: { key: CategoryKey; emoji: string; label: string }[] = [
-  { key: "Burger", emoji: "🍔", label: "Burger" },
-  { key: "Pizza", emoji: "🍕", label: "Pizza" },
-  { key: "Döner", emoji: "🥙", label: "Döner" },
-  { key: "Kabab", emoji: "🔥", label: "Kabab" },
-  { key: "Qəhvə", emoji: "☕", label: "Qəhvə" },
-  { key: "Şirniyyat", emoji: "🍰", label: "Şirniyyat" },
-  { key: "Balıq", emoji: "🐟", label: "Balıq" },
-  { key: "Toyuq", emoji: "🍗", label: "Toyuq" },
+export const categories: { key: CategoryKey; emoji: string; label: string; bg: string }[] = [
+  { key: "Burger", emoji: "🍔", label: "Burger", bg: "bg-amber-100" },
+  { key: "Pizza", emoji: "🍕", label: "Pizza", bg: "bg-red-100" },
+  { key: "Qəhvə", emoji: "☕", label: "Qəhvə", bg: "bg-orange-100" },
+  { key: "Döner", emoji: "🥙", label: "Döner", bg: "bg-yellow-100" },
+  { key: "Kabab", emoji: "🔥", label: "Kabab", bg: "bg-rose-100" },
+  { key: "Pide", emoji: "🫓", label: "Pide", bg: "bg-orange-100" },
+  { key: "Şirniyyat", emoji: "🍰", label: "Şirniyyat", bg: "bg-pink-100" },
+  { key: "Çörək", emoji: "🥖", label: "Çörək", bg: "bg-amber-100" },
+  { key: "Balıq", emoji: "🐟", label: "Balıq", bg: "bg-sky-100" },
+  { key: "Toyuq", emoji: "🍗", label: "Toyuq", bg: "bg-yellow-100" },
+  { key: "Fast Food", emoji: "🍟", label: "Fast Food", bg: "bg-red-100" },
 ];
 
 export type Restaurant = {
@@ -70,9 +76,12 @@ export const categoryEmoji: Record<CategoryKey, string> = {
   Döner: "🥙",
   Kabab: "🔥",
   Qəhvə: "☕",
+  Pide: "🫓",
   Şirniyyat: "🍰",
+  Çörək: "🥖",
   Balıq: "🐟",
   Toyuq: "🍗",
+  "Fast Food": "🍟",
 };
 
 export const restaurants: Restaurant[] = [
