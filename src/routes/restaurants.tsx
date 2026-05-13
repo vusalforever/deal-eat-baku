@@ -213,11 +213,24 @@ function RestaurantsPage() {
         </div>
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-          {filtered.map((r) => (
-            <div key={r.id} onMouseEnter={() => setHovered(r.id)} onMouseLeave={() => setHovered(undefined)}>
-              <RestaurantCard restaurant={r} />
-            </div>
-          ))}
+          {filtered.map((r) => {
+            const isSpot = spotlightId === r.id;
+            return (
+              <div
+                key={r.id}
+                ref={(el) => { cardRefs.current[r.id] = el; }}
+                onMouseEnter={() => setHovered(r.id)}
+                onMouseLeave={() => setHovered(undefined)}
+                className={`rounded-3xl transition-all duration-200 ${
+                  isSpot
+                    ? "ring-4 ring-primary ring-offset-2 ring-offset-background scale-[1.03] shadow-[var(--shadow-glow)] animate-pulse"
+                    : ""
+                }`}
+              >
+                <RestaurantCard restaurant={r} />
+              </div>
+            );
+          })}
         </div>
 
         {filtered.length === 0 && (
