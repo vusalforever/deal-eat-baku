@@ -13,6 +13,8 @@ export function Navbar({
   locating,
   activeCategory,
   onCategorySelect,
+  onDecide,
+  deciding,
 }: {
   address?: string;
   onAddressChange?: (v: string) => void;
@@ -21,6 +23,8 @@ export function Navbar({
   locating?: boolean;
   activeCategory?: CategoryKey;
   onCategorySelect?: (key: CategoryKey | undefined) => void;
+  onDecide?: () => void;
+  deciding?: boolean;
 }) {
   return (
     <header className="sticky top-0 z-40 w-full border-b border-border/60 bg-background/85 backdrop-blur-xl">
