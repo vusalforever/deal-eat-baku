@@ -1,11 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useMemo, useState } from "react";
-import { Clock, Bike, Filter } from "lucide-react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { Clock, Bike, Filter, ExternalLink } from "lucide-react";
 import { toast } from "sonner";
 import { Navbar } from "@/components/Navbar";
 import { MapView } from "@/components/MapView";
 import { RestaurantCard } from "@/components/RestaurantCard";
-import { cuisines, restaurants, type CategoryKey } from "@/data/restaurants";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { cuisines, restaurants, cheapestPlatform, platformMeta, type CategoryKey, type Restaurant } from "@/data/restaurants";
 
 type RestaurantsSearch = { category?: CategoryKey; address?: string };
 
