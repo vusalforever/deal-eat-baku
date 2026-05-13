@@ -88,6 +88,16 @@ export function Navbar({
           >
             Restoranlar
           </Link>
+          {onDecide && (
+            <button
+              type="button"
+              onClick={onDecide}
+              disabled={deciding}
+              className="px-3 py-1.5 text-sm rounded-full font-medium bg-primary/10 text-primary hover:bg-primary/20 transition disabled:opacity-60"
+            >
+              {deciding ? "🎲 Seçilir..." : "🎲 Qərar ver"}
+            </button>
+          )}
           <Link
             to="/ai"
             className="px-3 py-1.5 text-sm rounded-full text-muted-foreground hover:text-foreground transition data-[status=active]:text-primary data-[status=active]:bg-primary/10"
