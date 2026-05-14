@@ -115,10 +115,6 @@ function RestaurantsHome() {
         {/* Emoji category circles */}
         <EmojiCategoryBar active={activeCategory} onSelect={setActiveCategory} />
 
-        {/* Pill category filter */}
-        <div className="-mx-4">
-          <CategoryBar active={activeCategory} onSelect={setActiveCategory} />
-        </div>
 
         <div className="flex items-baseline justify-between">
           <h2 className="font-display font-bold text-2xl">
