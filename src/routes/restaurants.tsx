@@ -54,6 +54,7 @@ function MapPage() {
   const [editing, setEditing] = useState(false);
   const [center, setCenter] = useState<[number, number] | undefined>();
   const [locating, setLocating] = useState(false);
+  const [selected, setSelected] = useState<Restaurant | null>(null);
 
   const handleSubmit = async (q: string) => {
     const result = await geocodeBaku(q);
