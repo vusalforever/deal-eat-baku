@@ -4,7 +4,6 @@ import { MapPin, ExternalLink } from "lucide-react";
 import { toast } from "sonner";
 import { Navbar } from "@/components/Navbar";
 import { EmojiCategoryBar } from "@/components/EmojiCategoryBar";
-import { CategoryBar } from "@/components/CategoryBar";
 import { RestaurantCard } from "@/components/RestaurantCard";
 import {
   Dialog,
@@ -17,6 +16,7 @@ import {
   restaurants,
   cheapestPlatform,
   platformMeta,
+  neighborhoods,
   type CategoryKey,
   type Restaurant,
 } from "@/data/restaurants";
@@ -42,11 +42,18 @@ function RestaurantsHome() {
 
   const filtered = useMemo(() => {
     const a = address.trim().toLowerCase();
+    const matchedNb = a
+      ? neighborhoods.find((n) => n.toLowerCase().includes(a) || a.includes(n.toLowerCase()))
+      : undefined;
     return restaurants.filter((r) => {
       if (activeCategory && !r.categories.includes(activeCategory)) return false;
       if (a) {
-        const haystack = `${r.name} ${r.cuisine} ${r.tagline}`.toLowerCase();
-        if (!haystack.includes(a)) return false;
+        if (matchedNb) {
+          if (r.neighborhood !== matchedNb) return false;
+        } else {
+          const haystack = `${r.name} ${r.cuisine} ${r.tagline} ${r.neighborhood}`.toLowerCase();
+          if (!haystack.includes(a)) return false;
+        }
       }
       return true;
     });
@@ -86,7 +93,7 @@ function RestaurantsHome() {
     tick();
   };
 
-  const pickedCheapest = picked ? cheapestPlatform(picked.popularPrice) : null;
+  const pickedCheapest = picked ? cheapestPlatform(picked.fees) : null;
   const pickedMeta = pickedCheapest ? platformMeta[pickedCheapest] : null;
 
   return (
@@ -108,10 +115,6 @@ function RestaurantsHome() {
         {/* Emoji category circles */}
         <EmojiCategoryBar active={activeCategory} onSelect={setActiveCategory} />
 
-        {/* Pill category filter */}
-        <div className="-mx-4">
-          <CategoryBar active={activeCategory} onSelect={setActiveCategory} />
-        </div>
 
         <div className="flex items-baseline justify-between">
           <h2 className="font-display font-bold text-2xl">

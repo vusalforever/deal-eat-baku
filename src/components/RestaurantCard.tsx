@@ -1,16 +1,14 @@
 import { useState } from "react";
-import { Clock, Star, Bike, ExternalLink } from "lucide-react";
+import { Clock, Star, MapPin, ExternalLink } from "lucide-react";
 import { cheapestPlatform, platformMeta, type Restaurant, type Platform } from "@/data/restaurants";
-import { PriceBadge } from "./PriceBadge";
 import { RestaurantSheet } from "./RestaurantSheet";
 
 export function RestaurantCard({ restaurant }: { restaurant: Restaurant }) {
   const [open, setOpen] = useState(false);
-  const cheapest = cheapestPlatform(restaurant.popularPrice);
-  const minFee = Math.min(...Object.values(restaurant.fees) as number[]);
-  const platforms = Object.keys(restaurant.popularPrice) as Platform[];
-  const cheapestUrl = cheapest ? platformMeta[cheapest].url : "#";
-  const cheapestLabel = cheapest ? platformMeta[cheapest].label : "";
+  const cheapestFee = cheapestPlatform(restaurant.fees);
+  const platforms = Object.keys(restaurant.fees) as Platform[];
+  const cheapestUrl = cheapestFee ? platformMeta[cheapestFee].url : "#";
+  const cheapestLabel = cheapestFee ? platformMeta[cheapestFee].label : "";
 
   return (
     <>
@@ -48,25 +46,40 @@ export function RestaurantCard({ restaurant }: { restaurant: Restaurant }) {
               <span className="text-xs text-muted-foreground shrink-0">{restaurant.cuisine}</span>
             </div>
             <p className="text-sm text-muted-foreground line-clamp-1 mt-0.5">{restaurant.tagline}</p>
+            <div className="flex items-center gap-1 text-xs text-muted-foreground mt-1">
+              <MapPin className="size-3" /> {restaurant.neighborhood}
+            </div>
           </button>
 
-          <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-            <Bike className="size-3.5" />
-            Çatdırılma {minFee.toFixed(2)} AZN-dən
-          </div>
-
           <div className="space-y-1.5 pt-1">
-            <p className="text-[11px] uppercase tracking-wider text-muted-foreground font-medium">Qiymət müqayisəsi</p>
+            <p className="text-[11px] uppercase tracking-wider text-muted-foreground font-medium">Çatdırılma haqqı</p>
             <div className="grid grid-cols-1 gap-1.5">
-              {platforms.map((p) => (
-                <PriceBadge
-                  key={p}
-                  platform={p}
-                  price={restaurant.popularPrice[p]!}
-                  cheapest={p === cheapest}
-                  size="sm"
-                />
-              ))}
+              {platforms.map((p) => {
+                const isCheap = p === cheapestFee;
+                return (
+                  <div
+                    key={p}
+                    className={`flex items-center justify-between rounded-xl border px-3 py-2 text-sm transition ${
+                      isCheap ? "border-success/40 bg-success/5" : "border-border bg-card"
+                    }`}
+                  >
+                    <span className="flex items-center gap-2">
+                      <span
+                        className="size-2.5 rounded-full"
+                        style={{ backgroundColor: platformMeta[p].color }}
+                      />
+                      <span className="font-medium">{platformMeta[p].label}</span>
+                    </span>
+                    <span className="flex items-center gap-1.5">
+                      <span className="font-display font-semibold tabular-nums">
+                        {restaurant.fees[p]!.toFixed(2)}
+                      </span>
+                      <span className="text-xs text-muted-foreground">AZN</span>
+                      {isCheap && <span className="ml-1 text-success">✅</span>}
+                    </span>
+                  </div>
+                );
+              })}
             </div>
           </div>
 
@@ -87,3 +100,4 @@ export function RestaurantCard({ restaurant }: { restaurant: Restaurant }) {
     </>
   );
 }
+
