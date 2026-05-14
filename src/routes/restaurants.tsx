@@ -4,9 +4,11 @@ import { MapPin, LocateFixed, Loader2, Pencil, X } from "lucide-react";
 import { toast } from "sonner";
 import { Navbar } from "@/components/Navbar";
 import { MapView } from "@/components/MapView";
+import { RestaurantSheet } from "@/components/RestaurantSheet";
 import {
   restaurants,
   type CategoryKey,
+  type Restaurant,
 } from "@/data/restaurants";
 
 type MapSearch = { category?: CategoryKey; address?: string };
@@ -52,6 +54,7 @@ function MapPage() {
   const [editing, setEditing] = useState(false);
   const [center, setCenter] = useState<[number, number] | undefined>();
   const [locating, setLocating] = useState(false);
+  const [selected, setSelected] = useState<Restaurant | null>(null);
 
   const handleSubmit = async (q: string) => {
     const result = await geocodeBaku(q);
@@ -93,12 +96,19 @@ function MapPage() {
   }, [addrParam]);
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="h-screen flex flex-col bg-background overflow-hidden">
       <Navbar />
 
-      <div className="container mx-auto px-4 py-6 md:py-8">
-        {/* Pill address bar */}
-        <div className="flex flex-wrap items-center gap-2 mb-5">
+      <div className="relative flex-1">
+        <MapView
+          center={center}
+          restaurants={restaurants}
+          fullScreen
+          onSelect={(r) => setSelected(r)}
+        />
+
+        {/* Floating address bar overlay */}
+        <div className="absolute top-4 left-1/2 -translate-x-1/2 z-[1000] flex flex-wrap items-center justify-center gap-2 px-4 max-w-[95vw]">
           {!editing ? (
             <button
               type="button"
@@ -106,10 +116,10 @@ function MapPage() {
                 setDraft(address);
                 setEditing(true);
               }}
-              className="inline-flex items-center gap-2 rounded-full border border-border bg-card pl-4 pr-3 py-2 text-sm font-medium shadow-[var(--shadow-card)] hover:border-primary/40 transition"
+              className="inline-flex items-center gap-2 rounded-full border border-border bg-card pl-4 pr-3 py-2 text-sm font-medium shadow-[var(--shadow-elevated)] hover:border-primary/40 transition"
             >
               <MapPin className="size-4 text-primary" />
-              <span className="truncate max-w-[60vw]">{address}</span>
+              <span className="truncate max-w-[50vw]">{address}</span>
               <span className="grid place-items-center size-6 rounded-full bg-secondary text-muted-foreground">
                 <Pencil className="size-3" />
               </span>
@@ -150,7 +160,7 @@ function MapPage() {
             type="button"
             onClick={handleLocate}
             disabled={locating}
-            className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-3 py-2 text-sm font-medium hover:border-primary/40 transition disabled:opacity-60"
+            className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-3 py-2 text-sm font-medium shadow-[var(--shadow-elevated)] hover:border-primary/40 transition disabled:opacity-60"
           >
             {locating ? (
               <Loader2 className="size-4 animate-spin" />
@@ -160,9 +170,15 @@ function MapPage() {
             Mənim yerim
           </button>
         </div>
-
-        <MapView center={center} restaurants={restaurants} />
       </div>
+
+      {selected && (
+        <RestaurantSheet
+          restaurant={selected}
+          open={!!selected}
+          onOpenChange={(o) => !o && setSelected(null)}
+        />
+      )}
     </div>
   );
 }
