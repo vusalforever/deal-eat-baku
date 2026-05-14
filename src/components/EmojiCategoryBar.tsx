@@ -7,11 +7,35 @@ export function EmojiCategoryBar({
   active?: CategoryKey;
   onSelect: (key: CategoryKey | undefined) => void;
 }) {
+  const allActive = !active;
   return (
     <div
       className="flex gap-4 overflow-x-auto py-2 px-1 -mx-1"
       style={{ scrollbarWidth: "none" }}
     >
+      {/* Hamısı */}
+      <button
+        onClick={() => onSelect(undefined)}
+        className="shrink-0 flex flex-col items-center gap-1.5 group"
+      >
+        <span
+          className={`grid place-items-center size-16 rounded-full text-3xl transition-all ${
+            allActive
+              ? "bg-primary text-primary-foreground ring-4 ring-primary scale-105 shadow-[var(--shadow-glow)]"
+              : "bg-muted ring-2 ring-transparent group-hover:ring-primary/30 group-hover:scale-105"
+          }`}
+        >
+          🍽️
+        </span>
+        <span
+          className={`text-xs font-semibold transition ${
+            allActive ? "text-primary" : "text-foreground"
+          }`}
+        >
+          Hamısı
+        </span>
+      </button>
+
       {categories.map((c) => {
         const isActive = active === c.key;
         return (
