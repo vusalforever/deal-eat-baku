@@ -93,7 +93,7 @@ function RestaurantsHome() {
     tick();
   };
 
-  const pickedCheapest = picked ? cheapestPlatform(picked.popularPrice) : null;
+  const pickedCheapest = picked ? cheapestPlatform(picked.fees) : null;
   const pickedMeta = pickedCheapest ? platformMeta[pickedCheapest] : null;
 
   return (
