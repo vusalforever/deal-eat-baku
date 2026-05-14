@@ -23,8 +23,8 @@ export function RestaurantSheet({
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }) {
-  const platforms = Object.keys(restaurant.popularPrice) as Platform[];
-  const cheapestOverall = cheapestPlatform(restaurant.popularPrice);
+  const platforms = Object.keys(restaurant.fees) as Platform[];
+  const cheapestOverall = cheapestPlatform(restaurant.fees);
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
