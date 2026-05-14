@@ -105,6 +105,7 @@ export const categoryEmoji: Record<CategoryKey, string> = {
 export const restaurants: Restaurant[] = [
   {
     id: "firuze",
+    neighborhood: "Səbail",
     name: "Firuzə Restoranı",
     cuisine: "Azərbaycan",
     rating: 4.8,
@@ -128,6 +129,7 @@ export const restaurants: Restaurant[] = [
   },
   {
     id: "burgerlab",
+    neighborhood: "Gənclik",
     name: "Burger Lab",
     cuisine: "Burger",
     rating: 4.6,
@@ -150,6 +152,7 @@ export const restaurants: Restaurant[] = [
   },
   {
     id: "napoli",
+    neighborhood: "Nərimanov",
     name: "Napoli Pizzeria",
     cuisine: "İtalyan",
     rating: 4.7,
@@ -172,6 +175,7 @@ export const restaurants: Restaurant[] = [
   },
   {
     id: "sakura",
+    neighborhood: "Səbail",
     name: "Sakura Sushi",
     cuisine: "Yapon",
     rating: 4.5,
@@ -194,6 +198,7 @@ export const restaurants: Restaurant[] = [
   },
   {
     id: "shawking",
+    neighborhood: "Nəsimi",
     name: "Şawarma King",
     cuisine: "Fast Food",
     rating: 4.4,
@@ -216,6 +221,7 @@ export const restaurants: Restaurant[] = [
   },
   {
     id: "manqal",
+    neighborhood: "Gənclik",
     name: "Manqal House",
     cuisine: "Azərbaycan",
     rating: 4.9,
@@ -238,6 +244,7 @@ export const restaurants: Restaurant[] = [
   },
   {
     id: "coffeelab",
+    neighborhood: "Nəsimi",
     name: "Coffee Lab Baku",
     cuisine: "Kafe",
     rating: 4.7,
@@ -261,6 +268,7 @@ export const restaurants: Restaurant[] = [
   },
   {
     id: "shirniyyatevi",
+    neighborhood: "Səbail",
     name: "Şirniyyat Evi",
     cuisine: "Şirniyyat",
     rating: 4.8,
@@ -283,6 +291,7 @@ export const restaurants: Restaurant[] = [
   },
   {
     id: "chickenhouse",
+    neighborhood: "Nərimanov",
     name: "Chicken House",
     cuisine: "Fast Food",
     rating: 4.5,
