@@ -42,11 +42,18 @@ function RestaurantsHome() {
 
   const filtered = useMemo(() => {
     const a = address.trim().toLowerCase();
+    const matchedNb = a
+      ? neighborhoods.find((n) => n.toLowerCase().includes(a) || a.includes(n.toLowerCase()))
+      : undefined;
     return restaurants.filter((r) => {
       if (activeCategory && !r.categories.includes(activeCategory)) return false;
       if (a) {
-        const haystack = `${r.name} ${r.cuisine} ${r.tagline}`.toLowerCase();
-        if (!haystack.includes(a)) return false;
+        if (matchedNb) {
+          if (r.neighborhood !== matchedNb) return false;
+        } else {
+          const haystack = `${r.name} ${r.cuisine} ${r.tagline} ${r.neighborhood}`.toLowerCase();
+          if (!haystack.includes(a)) return false;
+        }
       }
       return true;
     });
