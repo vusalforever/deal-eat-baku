@@ -4,9 +4,11 @@ import { MapPin, LocateFixed, Loader2, Pencil, X } from "lucide-react";
 import { toast } from "sonner";
 import { Navbar } from "@/components/Navbar";
 import { MapView } from "@/components/MapView";
+import { RestaurantSheet } from "@/components/RestaurantSheet";
 import {
   restaurants,
   type CategoryKey,
+  type Restaurant,
 } from "@/data/restaurants";
 
 type MapSearch = { category?: CategoryKey; address?: string };
