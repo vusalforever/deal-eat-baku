@@ -51,10 +51,28 @@ export const categories: { key: CategoryKey; emoji: string; label: string; bg: s
   { key: "Fast Food", emoji: "🍟", label: "Fast Food", bg: "bg-red-100" },
 ];
 
+export type Neighborhood =
+  | "Yasamal"
+  | "28 May"
+  | "Gənclik"
+  | "Nəsimi"
+  | "Səbail"
+  | "Nərimanov";
+
+export const neighborhoods: Neighborhood[] = [
+  "Yasamal",
+  "28 May",
+  "Gənclik",
+  "Nəsimi",
+  "Səbail",
+  "Nərimanov",
+];
+
 export type Restaurant = {
   id: string;
   name: string;
   cuisine: string;
+  neighborhood: Neighborhood;
   categories: CategoryKey[];
   rating: number;
   deliveryMin: number;
