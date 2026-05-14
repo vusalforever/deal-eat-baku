@@ -4,7 +4,6 @@ import { MapPin, ExternalLink } from "lucide-react";
 import { toast } from "sonner";
 import { Navbar } from "@/components/Navbar";
 import { EmojiCategoryBar } from "@/components/EmojiCategoryBar";
-import { CategoryBar } from "@/components/CategoryBar";
 import { RestaurantCard } from "@/components/RestaurantCard";
 import {
   Dialog,
@@ -17,6 +16,7 @@ import {
   restaurants,
   cheapestPlatform,
   platformMeta,
+  neighborhoods,
   type CategoryKey,
   type Restaurant,
 } from "@/data/restaurants";
