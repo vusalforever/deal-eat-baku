@@ -98,7 +98,7 @@ function RestaurantsHome() {
 
   return (
     <div className="min-h-screen bg-background">
-      <Navbar onDecide={handleDecide} deciding={deciding} />
+      <Navbar />
 
       <div className="container mx-auto px-4 py-6 md:py-8 space-y-6">
         {/* Address input */}
