@@ -11,7 +11,7 @@ export const Route = createFileRoute("/restaurants/$id")({
     return {
       meta: [
         { title: r ? `${r.name} — DealEat` : "Restoran — DealEat" },
-        { name: "description", content: r?.tagline ?? "Restoran qiymət müqayisəsi" },
+        { name: "description", content: r?.tagline ?? "Restaurant price comparison" },
       ],
     };
   },
@@ -23,15 +23,15 @@ export const Route = createFileRoute("/restaurants/$id")({
   notFoundComponent: () => (
     <div className="min-h-screen grid place-items-center">
       <div className="text-center">
-        <h1 className="font-display text-3xl font-bold">Restoran tapılmadı</h1>
-        <Link to="/restaurants" className="text-primary mt-4 inline-block">← Restoranlara qayıt</Link>
+        <h1 className="font-display text-3xl font-bold">Restaurant not found</h1>
+        <Link to="/restaurants" className="text-primary mt-4 inline-block">← Back to restaurants</Link>
       </div>
     </div>
   ),
   errorComponent: ({ error }) => (
     <div className="min-h-screen grid place-items-center text-center px-4">
       <div>
-        <h1 className="font-display text-2xl font-bold">Xəta baş verdi</h1>
+        <h1 className="font-display text-2xl font-bold">Something went wrong</h1>
         <p className="text-muted-foreground mt-2">{error.message}</p>
       </div>
     </div>
@@ -54,7 +54,7 @@ function RestaurantDetail() {
         <div className="container mx-auto px-4 absolute inset-0 flex flex-col justify-end pb-6">
           <Link to="/restaurants" className="inline-flex items-center gap-1.5 text-sm text-foreground/80 hover:text-foreground mb-4 w-fit">
             <ArrowLeft className="size-4" />
-            Restoranlar
+            Restaurants
           </Link>
           <div className="flex items-end justify-between gap-4 flex-wrap">
             <div>
@@ -67,7 +67,7 @@ function RestaurantDetail() {
                 <Star className="size-4 fill-primary text-primary" /> {restaurant.rating}
               </span>
               <span className="inline-flex items-center gap-1 rounded-full bg-card border border-border px-3 py-1.5">
-                <Clock className="size-4" /> {restaurant.deliveryMin} dəq
+                <Clock className="size-4" /> {restaurant.deliveryMin} min
               </span>
             </div>
           </div>
@@ -77,7 +77,7 @@ function RestaurantDetail() {
       <div className="container mx-auto px-4 py-8 grid lg:grid-cols-[1fr_360px] gap-8">
         {/* Menu */}
         <div className="space-y-4">
-          <h2 className="font-display font-bold text-2xl">Menyu — qiymət müqayisəsi</h2>
+          <h2 className="font-display font-bold text-2xl">Menu — Price Comparison</h2>
           <div className="space-y-4">
             {restaurant.menu.map((item) => {
               const cheapest = cheapestPlatform(item.prices);
@@ -101,7 +101,7 @@ function RestaurantDetail() {
                         {savings > 1 && (
                           <span className="shrink-0 inline-flex items-center gap-1 rounded-full bg-success/10 text-success text-xs font-bold px-2.5 py-1">
                             <TrendingDown className="size-3" />
-                            {savings.toFixed(0)}% qənaət
+                            {savings.toFixed(0)}% off
                           </span>
                         )}
                       </div>
@@ -112,7 +112,7 @@ function RestaurantDetail() {
                       </div>
                       <Button asChild variant="default" className="w-full sm:w-auto rounded-xl gap-2 font-semibold">
                         <a href={platformMeta[cheapest!].url} target="_blank" rel="noreferrer">
-                          {platformMeta[cheapest!].label} ilə {cheapestPrice.toFixed(2)} AZN-ə sifariş et
+                          Order for ₼{cheapestPrice.toFixed(2)} on {platformMeta[cheapest!].label}
                           <ExternalLink className="size-4" />
                         </a>
                       </Button>
@@ -127,7 +127,7 @@ function RestaurantDetail() {
         {/* Sidebar */}
         <aside className="space-y-4 lg:sticky lg:top-24 self-start">
           <div className="rounded-3xl bg-card border border-border p-5 shadow-[var(--shadow-card)]">
-            <h3 className="font-display font-semibold text-lg mb-4">Çatdırılma haqqı</h3>
+            <h3 className="font-display font-semibold text-lg mb-4">Delivery Fee</h3>
             <div className="space-y-2">
               {platforms.map((p) => (
                 <div key={p} className="flex items-center justify-between text-sm">
@@ -137,7 +137,7 @@ function RestaurantDetail() {
                   </div>
                   <div className="flex items-center gap-1.5">
                     <Bike className="size-3.5 text-muted-foreground" />
-                    <span className="font-medium tabular-nums">{restaurant.fees[p]!.toFixed(2)} AZN</span>
+                    <span className="font-medium tabular-nums">₼{restaurant.fees[p]!.toFixed(2)}</span>
                   </div>
                 </div>
               ))}
@@ -145,9 +145,9 @@ function RestaurantDetail() {
           </div>
 
           <div className="rounded-3xl bg-gradient-to-br from-primary to-[var(--primary-glow)] text-primary-foreground p-5 shadow-[var(--shadow-glow)]">
-            <h3 className="font-display font-semibold text-lg">Ən sərfəli sifariş</h3>
+            <h3 className="font-display font-semibold text-lg">Best Deal</h3>
             <p className="text-sm opacity-90 mt-1">
-              Bütün menyu üzrə hesablanmış ortalama ən aşağı qiyməti seçirik.
+              We pick the lowest average price across the full menu.
             </p>
             <Button asChild variant="secondary" className="w-full mt-4 rounded-xl font-semibold gap-2">
               <a
@@ -155,7 +155,7 @@ function RestaurantDetail() {
                 target="_blank"
                 rel="noreferrer"
               >
-                İndi sifariş et
+                Order Now
                 <ExternalLink className="size-4" />
               </a>
             </Button>

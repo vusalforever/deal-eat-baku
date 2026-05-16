@@ -24,11 +24,11 @@ import {
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Restoranlar — DealEat Bakı" },
+      { title: "Restaurants — DealEat Baku" },
       {
         name: "description",
         content:
-          "Bakıdakı restoranları kateqoriya və ünvana görə tap, Wolt, Bolt Food və Yango Deli qiymətlərini müqayisə et.",
+          "Find restaurants in Baku by category and area, compare prices across Wolt, Bolt Food and Yango Deli.",
       },
     ],
   }),
@@ -66,7 +66,7 @@ function RestaurantsHome() {
 
   const handleDecide = () => {
     if (!filtered.length || deciding) {
-      if (!filtered.length) toast.error("Seçim üçün restoran yoxdur.");
+      if (!filtered.length) toast.error("No restaurants to pick from.");
       return;
     }
     setDeciding(true);
@@ -100,15 +100,15 @@ function RestaurantsHome() {
     <div className="min-h-screen bg-background">
       <Navbar />
 
-      <div className="container mx-auto px-4 py-6 md:py-8 space-y-6">
+      <div className="container mx-auto px-4 py-4 sm:py-6 md:py-8 space-y-4 sm:space-y-6 pb-24 sm:pb-8">
         {/* Address input */}
         <div className="flex items-center gap-2 rounded-2xl border border-border bg-card px-4 py-3 shadow-[var(--shadow-card)] focus-within:border-primary/60 transition-colors">
           <MapPin className="size-5 text-primary shrink-0" />
           <input
             value={address}
             onChange={(e) => setAddress(e.target.value)}
-            placeholder="📍 Ünvanınızı daxil edin (Yasamal, Nəsimi, 28 May...)"
-            className="flex-1 bg-transparent outline-none text-base placeholder:text-muted-foreground"
+            placeholder="📍 Your area (Yasamal, Nasimi...)"
+            className="flex-1 bg-transparent outline-none text-sm sm:text-base placeholder:text-muted-foreground"
           />
         </div>
 
@@ -117,14 +117,14 @@ function RestaurantsHome() {
 
 
         <div className="flex items-baseline justify-between">
-          <h2 className="font-display font-bold text-2xl">
-            {filtered.length} restoran tapıldı
+          <h2 className="font-display font-bold text-lg sm:text-2xl">
+            {filtered.length} restaurant{filtered.length !== 1 ? "s" : ""}
             {activeCategory ? ` · ${activeCategory}` : ""}
           </h2>
-          <p className="text-sm text-muted-foreground">Qiymətlər real vaxtda yenilənir</p>
+          <p className="text-xs sm:text-sm text-muted-foreground hidden sm:block">Prices updated in real time</p>
         </div>
 
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
           {filtered.map((r) => {
             const isSpot = spotlightId === r.id;
             return (
@@ -149,7 +149,7 @@ function RestaurantsHome() {
 
         {filtered.length === 0 && (
           <div className="text-center py-20 text-muted-foreground">
-            Bu kateqoriyaya uyğun restoran tapılmadı.
+            No restaurants found for this category.
           </div>
         )}
       </div>
@@ -167,7 +167,7 @@ function RestaurantsHome() {
           <DialogHeader>
             <div className="mx-auto text-6xl mb-2 animate-bounce">🎲</div>
             <DialogTitle className="font-display text-2xl">
-              Bu gün sənin seçimin
+              Today's pick for you
             </DialogTitle>
             <DialogDescription className="text-base">
               {picked && pickedMeta ? (
@@ -176,8 +176,8 @@ function RestaurantsHome() {
                     {picked.name}
                   </span>
                   <span className="block mt-2 text-muted-foreground">
-                    <span className="font-semibold text-primary">{pickedMeta.label}</span>
-                    -dan sifariş ver!
+                    Order from{" "}
+                    <span className="font-semibold text-primary">{pickedMeta.label}</span>!
                   </span>
                 </>
               ) : null}
@@ -190,7 +190,7 @@ function RestaurantsHome() {
               rel="noopener noreferrer"
               className="mt-2 inline-flex items-center justify-center gap-2 rounded-full bg-primary text-primary-foreground font-semibold py-3 px-6 hover:opacity-90 transition shadow-[var(--shadow-glow)]"
             >
-              Sifariş et — {pickedMeta.label}
+              Order — {pickedMeta.label}
               <ExternalLink className="size-4" />
             </a>
           )}

@@ -1,14 +1,14 @@
 import { useState } from "react";
 import { Clock, Star, MapPin, ExternalLink } from "lucide-react";
-import { cheapestPlatform, platformMeta, type Restaurant, type Platform } from "@/data/restaurants";
+import { computeDealScores, platformMeta, type Restaurant } from "@/data/restaurants";
 import { RestaurantSheet } from "./RestaurantSheet";
 
 export function RestaurantCard({ restaurant }: { restaurant: Restaurant }) {
   const [open, setOpen] = useState(false);
-  const cheapestFee = cheapestPlatform(restaurant.fees);
-  const platforms = Object.keys(restaurant.fees) as Platform[];
-  const cheapestUrl = cheapestFee ? platformMeta[cheapestFee].url : "#";
-  const cheapestLabel = cheapestFee ? platformMeta[cheapestFee].label : "";
+  const dealScores = computeDealScores(restaurant);
+  const bestDeal = dealScores[0];
+  const bestUrl = bestDeal ? platformMeta[bestDeal.platform].url : "#";
+  const bestLabel = bestDeal ? platformMeta[bestDeal.platform].label : "";
 
   return (
     <>
@@ -30,67 +30,69 @@ export function RestaurantCard({ restaurant }: { restaurant: Restaurant }) {
               {restaurant.rating}
             </div>
             <div className="absolute top-3 right-3 inline-flex items-center gap-1 rounded-full bg-background/95 backdrop-blur px-2.5 py-1 text-xs font-medium shadow-sm">
-              <Clock className="size-3" /> {restaurant.deliveryMin} dəq
+              <Clock className="size-3" /> {restaurant.deliveryMin} min
             </div>
           </div>
         </button>
 
-        <div className="p-4 space-y-3 flex-1 flex flex-col">
+        <div className="p-3 sm:p-4 space-y-3 flex-1 flex flex-col">
           <button
             type="button"
             onClick={() => setOpen(true)}
             className="block text-left"
           >
             <div className="flex items-baseline justify-between gap-2">
-              <h3 className="font-display font-semibold text-lg leading-tight truncate">{restaurant.name}</h3>
+              <h3 className="font-display font-semibold text-base sm:text-lg leading-tight truncate">{restaurant.name}</h3>
               <span className="text-xs text-muted-foreground shrink-0">{restaurant.cuisine}</span>
             </div>
-            <p className="text-sm text-muted-foreground line-clamp-1 mt-0.5">{restaurant.tagline}</p>
+            <p className="text-xs sm:text-sm text-muted-foreground line-clamp-1 mt-0.5">{restaurant.tagline}</p>
             <div className="flex items-center gap-1 text-xs text-muted-foreground mt-1">
-              <MapPin className="size-3" /> {restaurant.neighborhood}
+              <MapPin className="size-3" /> {restaurant.neighborhood}, Baku
             </div>
           </button>
 
           <div className="space-y-1.5 pt-1">
-            <p className="text-[11px] uppercase tracking-wider text-muted-foreground font-medium">Çatdırılma haqqı</p>
-            <div className="grid grid-cols-1 gap-1.5">
-              {platforms.map((p) => {
-                const isCheap = p === cheapestFee;
-                return (
-                  <div
-                    key={p}
-                    className={`flex items-center justify-between rounded-xl border px-3 py-2 text-sm transition ${
-                      isCheap ? "border-success/40 bg-success/5" : "border-border bg-card"
+            <div className="flex items-baseline justify-between">
+              <p className="text-[10px] sm:text-[11px] uppercase tracking-wider text-muted-foreground font-medium">Deal Score</p>
+              <p className="text-[9px] sm:text-[10px] text-muted-foreground hidden sm:block">fee · speed · value</p>
+            </div>
+            <div className="grid grid-cols-1 gap-1">
+              {dealScores.map(({ platform, fee, deliveryMin, score, isBest }) => (
+                <div
+                  key={platform}
+                  className={`flex items-center gap-1.5 sm:gap-2 rounded-xl border px-2.5 sm:px-3 py-1.5 sm:py-2 transition ${
+                    isBest ? "border-success/40 bg-success/5" : "border-border bg-card"
+                  }`}
+                >
+                  <span
+                    className="size-2 sm:size-2.5 rounded-full shrink-0"
+                    style={{ backgroundColor: platformMeta[platform].color }}
+                  />
+                  <span className="font-medium flex-1 truncate text-xs sm:text-sm">{platformMeta[platform].label}</span>
+                  <span className="text-[10px] sm:text-[11px] text-muted-foreground tabular-nums">
+                    ₼{fee.toFixed(2)} · {deliveryMin}m
+                  </span>
+                  <span
+                    className={`font-display font-bold text-xs sm:text-sm tabular-nums ${
+                      isBest ? "text-success" : "text-muted-foreground"
                     }`}
                   >
-                    <span className="flex items-center gap-2">
-                      <span
-                        className="size-2.5 rounded-full"
-                        style={{ backgroundColor: platformMeta[p].color }}
-                      />
-                      <span className="font-medium">{platformMeta[p].label}</span>
-                    </span>
-                    <span className="flex items-center gap-1.5">
-                      <span className="font-display font-semibold tabular-nums">
-                        {restaurant.fees[p]!.toFixed(2)}
-                      </span>
-                      <span className="text-xs text-muted-foreground">AZN</span>
-                      {isCheap && <span className="ml-1 text-success">✅</span>}
-                    </span>
-                  </div>
-                );
-              })}
+                    {score}
+                  </span>
+                  {isBest && <span className="text-success text-xs leading-none">✅</span>}
+                </div>
+              ))}
             </div>
           </div>
 
           <a
-            href={cheapestUrl}
+            href={bestUrl}
             target="_blank"
             rel="noopener noreferrer"
             onClick={(e) => e.stopPropagation()}
             className="mt-auto inline-flex items-center justify-center gap-1.5 rounded-full bg-primary text-primary-foreground font-semibold text-sm py-2.5 hover:opacity-90 transition shadow-[var(--shadow-glow)]"
           >
-            Sifariş et — {cheapestLabel}
+            Order — {bestLabel}
             <ExternalLink className="size-3.5" />
           </a>
         </div>
@@ -100,4 +102,3 @@ export function RestaurantCard({ restaurant }: { restaurant: Restaurant }) {
     </>
   );
 }
-

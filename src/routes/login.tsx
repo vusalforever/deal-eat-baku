@@ -1,13 +1,14 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { Mail, LogIn } from "lucide-react";
+import logoSrc from "@/assets/DealEat-Logo.png";
 
 export const Route = createFileRoute("/login")({
   component: LoginPage,
   head: () => ({
     meta: [
-      { title: "Daxil ol — DealEat" },
-      { name: "description", content: "Bakının ən ucuz yeməyini tap. DealEat-ə daxil ol." },
+      { title: "Sign In — DealEat" },
+      { name: "description", content: "Find the best food deals in Baku. Sign in to DealEat." },
     ],
   }),
 });
@@ -70,21 +71,20 @@ function LoginPage() {
       `}</style>
 
       {/* card */}
-      <div className="relative w-full max-w-md rounded-3xl border border-white/10 bg-white/[0.04] backdrop-blur-2xl p-8 md:p-10 shadow-[0_30px_80px_-20px_rgba(0,0,0,0.6)]">
+      <div className="relative w-full max-w-md rounded-3xl border border-white/10 bg-white/[0.04] backdrop-blur-2xl p-5 sm:p-8 md:p-10 shadow-[0_30px_80px_-20px_rgba(0,0,0,0.6)]">
         {/* logo */}
         <div className="flex flex-col items-center text-center">
-          <div className="flex items-center gap-2">
-            <div className="size-12 rounded-2xl bg-gradient-to-br from-[oklch(0.78_0.18_60)] to-[oklch(0.68_0.21_35)] grid place-items-center shadow-[0_10px_40px_-10px_oklch(0.71_0.19_45/0.7)]">
-              <span className="text-white font-bold text-2xl">D</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="font-bold text-3xl tracking-tight text-white">DealEat</span>
-              <span className="text-[10px] font-semibold tracking-widest px-1.5 py-0.5 rounded-md bg-primary text-primary-foreground">
-                BETA
-              </span>
-            </div>
+          <div className="flex items-center gap-3">
+            <img
+              src={logoSrc}
+              alt="DealEat"
+              className="h-16 sm:h-24 w-auto object-contain drop-shadow-lg"
+            />
+            <span className="text-[10px] font-semibold tracking-widest px-1.5 py-0.5 rounded-md bg-primary text-primary-foreground">
+              BETA
+            </span>
           </div>
-          <p className="mt-3 text-sm text-white/70">Bakının ən ucuz yeməyini tap</p>
+          <p className="mt-3 text-sm text-white/70">Find the best food deals in Baku</p>
         </div>
 
         {/* buttons */}
@@ -94,12 +94,12 @@ function LoginPage() {
             className="w-full h-11 rounded-xl bg-white text-neutral-900 hover:bg-white/90 font-medium gap-3"
           >
             <GoogleIcon />
-            Google ilə Daxil Ol
+            Continue with Google
           </Button>
 
           <div className="flex items-center gap-3 py-1">
             <div className="h-px flex-1 bg-white/15" />
-            <span className="text-xs uppercase tracking-widest text-white/50">və ya</span>
+            <span className="text-xs uppercase tracking-widest text-white/50">or</span>
             <div className="h-px flex-1 bg-white/15" />
           </div>
 
@@ -108,7 +108,7 @@ function LoginPage() {
             className="w-full h-11 rounded-xl bg-primary text-primary-foreground hover:opacity-95 font-medium gap-2"
           >
             <Mail className="size-4" />
-            E-poçt ilə Qeydiyyat
+            Sign up with Email
           </Button>
 
           <Button
@@ -117,7 +117,7 @@ function LoginPage() {
             className="w-full h-11 rounded-xl border-white/15 bg-white/5 text-white hover:bg-white/10 hover:text-white font-medium gap-2"
           >
             <LogIn className="size-4" />
-            Daxil Ol
+            Sign In
           </Button>
         </div>
 
@@ -127,14 +127,14 @@ function LoginPage() {
             to="/"
             className="text-sm text-white/60 hover:text-white underline-offset-4 hover:underline transition-colors"
           >
-            Hesabsız davam et →
+            Continue without account →
           </Link>
         </div>
 
         <p className="mt-6 text-[11px] text-center text-white/40 leading-relaxed">
-          Davam etməklə{" "}
-          <span className="text-white/60">İstifadə Şərtləri</span> və{" "}
-          <span className="text-white/60">Məxfilik Siyasəti</span> ilə razılaşırsan.
+          By continuing you agree to our{" "}
+          <span className="text-white/60">Terms of Service</span> and{" "}
+          <span className="text-white/60">Privacy Policy</span>.
         </p>
       </div>
     </div>

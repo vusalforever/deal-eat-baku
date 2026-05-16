@@ -173,10 +173,10 @@ export function MapView({
                   )}
 
                   <p className="text-sm text-gray-700 m-0 mb-3">
+                    Delivery from{" "}
                     <span className="font-bold text-gray-900">
-                      {cheapestFee.toFixed(2)} AZN
+                      ₼{cheapestFee.toFixed(2)}
                     </span>
-                    -dən başlayır
                   </p>
 
                   <button
@@ -184,7 +184,7 @@ export function MapView({
                     onClick={() => onSelect?.(r)}
                     className="block w-full text-center rounded-xl bg-orange-500 hover:bg-orange-600 text-white text-sm font-bold py-2.5 transition shadow-md"
                   >
-                    Menyunu gör →
+                    View Menu →
                   </button>
                 </div>
               </Popup>

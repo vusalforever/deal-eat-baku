@@ -31,9 +31,8 @@ export function PriceBadge({
       </div>
       <div className="flex items-center gap-1.5">
         <span className={`font-display font-semibold tabular-nums ${size === "sm" ? "text-sm" : "text-base"}`}>
-          {price.toFixed(2)}
+          ₼{price.toFixed(2)}
         </span>
-        <span className={`text-muted-foreground ${size === "sm" ? "text-[10px]" : "text-xs"}`}>AZN</span>
         {cheapest && (
           <span className="ml-1 inline-flex items-center gap-0.5 rounded-full bg-success px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wide text-success-foreground">
             <Check className="size-2.5" strokeWidth={3} />

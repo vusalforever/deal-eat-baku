@@ -1,4 +1,4 @@
-import { Star, Clock, Bike, ExternalLink, TrendingDown } from "lucide-react";
+import { Star, Clock, Bike, ExternalLink, TrendingDown, Trophy } from "lucide-react";
 import {
   Sheet,
   SheetContent,
@@ -9,6 +9,7 @@ import {
 import { PriceBadge } from "./PriceBadge";
 import {
   cheapestPlatform,
+  computeDealScores,
   platformMeta,
   type Platform,
   type Restaurant,
@@ -25,12 +26,14 @@ export function RestaurantSheet({
 }) {
   const platforms = Object.keys(restaurant.fees) as Platform[];
   const cheapestOverall = cheapestPlatform(restaurant.fees);
+  const dealScores = computeDealScores(restaurant);
+  const bestDeal = dealScores[0];
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent
         side="right"
-        className="w-full sm:max-w-xl p-0 overflow-y-auto"
+        className="w-full sm:max-w-xl p-0 overflow-y-auto pb-safe"
       >
         {/* Hero */}
         <div className="relative h-48 overflow-hidden">
@@ -55,7 +58,7 @@ export function RestaurantSheet({
           </div>
         </div>
 
-        <div className="p-5 space-y-6">
+        <div className="p-4 sm:p-5 space-y-5 sm:space-y-6">
           {/* Stats */}
           <div className="flex flex-wrap gap-2 text-xs">
             <span className="inline-flex items-center gap-1 rounded-full bg-card border border-border px-3 py-1.5">
@@ -63,41 +66,74 @@ export function RestaurantSheet({
               {restaurant.rating}
             </span>
             <span className="inline-flex items-center gap-1 rounded-full bg-card border border-border px-3 py-1.5">
-              <Clock className="size-3.5" /> {restaurant.deliveryMin} dəq
+              <Clock className="size-3.5" /> {restaurant.deliveryMin} min
             </span>
             <span className="inline-flex items-center gap-1 rounded-full bg-card border border-border px-3 py-1.5">
               <Bike className="size-3.5" />
-              {Math.min(...(Object.values(restaurant.fees) as number[])).toFixed(2)} AZN-dən
+              from ₼{Math.min(...(Object.values(restaurant.fees) as number[])).toFixed(2)}
             </span>
           </div>
 
-          {/* Platform delivery fees */}
-          <div className="rounded-2xl bg-card border border-border p-4">
-            <p className="text-[11px] uppercase tracking-wider text-muted-foreground font-medium mb-3">
-              Platformalar və çatdırılma
-            </p>
-            <div className="space-y-2">
-              {platforms.map((p) => (
-                <div key={p} className="flex items-center justify-between text-sm">
+          {/* Deal Score */}
+          <div className="rounded-2xl bg-card border border-border p-4 space-y-3">
+            <div className="flex items-center justify-between">
+              <p className="text-[11px] uppercase tracking-wider text-muted-foreground font-medium">
+                Deal Score
+              </p>
+              <p className="text-[10px] text-muted-foreground">price 45% · speed 35% · discount 20%</p>
+            </div>
+
+            {dealScores.map(({ platform, fee, deliveryMin, score, isBest }) => (
+              <div key={platform} className={`rounded-xl border p-3 space-y-2 ${isBest ? "border-success/40 bg-success/5" : "border-border"}`}>
+                <div className="flex items-center justify-between text-sm">
                   <div className="flex items-center gap-2">
+                    {isBest && <Trophy className="size-3.5 text-amber-500 shrink-0" />}
                     <span
-                      className="size-2.5 rounded-full"
-                      style={{ backgroundColor: platformMeta[p].color }}
+                      className="size-2.5 rounded-full shrink-0"
+                      style={{ backgroundColor: platformMeta[platform].color }}
                     />
-                    <span className="font-medium">{platformMeta[p].label}</span>
+                    <span className="font-semibold">{platformMeta[platform].label}</span>
+                    {isBest && (
+                      <span className="text-[10px] font-bold text-success uppercase tracking-wide">
+                        Best Deal
+                      </span>
+                    )}
                   </div>
-                  <span className="tabular-nums text-muted-foreground">
-                    {restaurant.fees[p]!.toFixed(2)} AZN
+                  <span className={`font-display font-bold tabular-nums ${isBest ? "text-success" : "text-foreground"}`}>
+                    {score}<span className="text-[10px] font-normal text-muted-foreground">/100</span>
                   </span>
                 </div>
-              ))}
-            </div>
+
+                {/* Score bar */}
+                <div className="h-1.5 rounded-full bg-border overflow-hidden">
+                  <div
+                    className={`h-full rounded-full transition-all ${isBest ? "bg-success" : "bg-muted-foreground/40"}`}
+                    style={{ width: `${score}%` }}
+                  />
+                </div>
+
+                <div className="flex gap-3 text-[11px] text-muted-foreground">
+                  <span className="flex items-center gap-1">
+                    <Bike className="size-3" />
+                    ₼{fee.toFixed(2)} fee
+                  </span>
+                  <span className="flex items-center gap-1">
+                    <Clock className="size-3" />
+                    ~{deliveryMin} min
+                  </span>
+                  <span className="flex items-center gap-1">
+                    <Star className="size-3 fill-primary text-primary" />
+                    {restaurant.rating}
+                  </span>
+                </div>
+              </div>
+            ))}
           </div>
 
           {/* Menu */}
           <div className="space-y-3">
             <h3 className="font-display font-bold text-lg">
-              Menyu — qiymət müqayisəsi
+              Menu — Price Comparison
             </h3>
             {restaurant.menu.map((item) => {
               const itemCheapest = cheapestPlatform(item.prices);
@@ -144,16 +180,16 @@ export function RestaurantSheet({
           {/* Order buttons */}
           <div className="space-y-2 pt-2 sticky bottom-0 bg-background pb-2">
             <p className="text-[11px] uppercase tracking-wider text-muted-foreground font-medium">
-              Sifariş et
+              Order on
             </p>
-            {platforms.map((p) => (
+            {dealScores.map(({ platform, isBest }) => (
               <a
-                key={p}
-                href={platformMeta[p].url}
+                key={platform}
+                href={platformMeta[platform].url}
                 target="_blank"
                 rel="noopener noreferrer"
                 className={`flex items-center justify-between gap-2 rounded-xl px-4 py-3 font-semibold text-sm transition ${
-                  p === cheapestOverall
+                  isBest
                     ? "bg-primary text-primary-foreground shadow-[var(--shadow-glow)] hover:opacity-90"
                     : "bg-card border border-border hover:bg-accent"
                 }`}
@@ -161,10 +197,10 @@ export function RestaurantSheet({
                 <span className="flex items-center gap-2">
                   <span
                     className="size-2.5 rounded-full"
-                    style={{ backgroundColor: platformMeta[p].color }}
+                    style={{ backgroundColor: platformMeta[platform].color }}
                   />
-                  Sifariş et — {platformMeta[p].label}
-                  {p === cheapestOverall && <span className="ml-1">✅</span>}
+                  Order on {platformMeta[platform].label}
+                  {isBest && <span className="ml-1">✅</span>}
                 </span>
                 <ExternalLink className="size-4" />
               </a>

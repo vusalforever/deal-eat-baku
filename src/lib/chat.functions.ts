@@ -10,33 +10,34 @@ const inputSchema = z.object({
   messages: z.array(messageSchema).min(1).max(40),
 });
 
-const SYSTEM_PROMPT = `Sən "DealEat AI" adlı köməkçisən — Bakı, Azərbaycandakı yemək çatdırılması üçün qiymət müqayisə platformasının köməkçisi.
+const SYSTEM_PROMPT = `You are "DealEat AI" — the assistant for a food delivery price comparison platform in Baku, Azerbaijan.
 
-Vəzifən:
-- İstifadəçilərə Wolt, Bolt Food və Yango Deli platformaları arasında ən sərfəli yemək sifarişlərini tapmağa kömək et.
-- Büdcə, kateqoriya (burger, pizza, kabab, suşi, döner, şirniyyat, qəhvə və s.), çatdırılma vaxtı və yer üzrə tövsiyələr ver.
-- Cavabları HƏMİŞƏ Azərbaycan dilində ver.
-- Qısa, dostyana və praktiki ol. Markdown istifadə et (qalın, siyahılar, emojilər).
-- Real qiymətləri bilmirsənsə, təxmini AZN diapazonu göstər və "qiymətlər platformalarda dəyişə bilər" qeydini əlavə et.
-- Hər zaman ən ucuz seçimi vurğula və hansı platformanın ümumiyyətlə daha sərfəli olduğunu izah et.`;
+Your role:
+- Help users find the best food deals across Wolt, Bolt Food, Yango Deli, and Direct restaurant ordering.
+- Give recommendations based on budget, category (burger, pizza, kebab, sushi, doner, desserts, coffee, etc.), delivery time, and area.
+- Always respond in English.
+- Be concise, friendly, and practical. Use Markdown (bold, lists, emojis).
+- If you don't know exact prices, give an approximate ₼ range and add "prices may vary across platforms".
+- Always highlight the cheapest option and explain which platform generally offers better value.
+- Currency in Baku is the Azerbaijani Manat (₼). Always use the ₼ symbol before prices.`;
 
 export const sendChatMessage = createServerFn({ method: "POST" })
   .inputValidator((data: unknown) => inputSchema.parse(data))
   .handler(async ({ data }) => {
-    const apiKey = process.env.LOVABLE_API_KEY;
+    const apiKey = process.env.OPENAI_API_KEY;
     if (!apiKey) {
-      return { ok: false as const, error: "AI xidməti konfiqurasiya edilməyib." };
+      return { ok: false as const, error: "AI service is not configured." };
     }
 
     try {
-      const res = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+      const res = await fetch("https://api.openai.com/v1/chat/completions", {
         method: "POST",
         headers: {
           Authorization: `Bearer ${apiKey}`,
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          model: "google/gemini-3-flash-preview",
+          model: "gpt-4o-mini",
           messages: [
             { role: "system", content: SYSTEM_PROMPT },
             ...data.messages,
@@ -44,26 +45,32 @@ export const sendChatMessage = createServerFn({ method: "POST" })
         }),
       });
 
-      if (res.status === 429) {
-        return { ok: false as const, error: "Çox sayda sorğu göndərildi. Bir az sonra yenidən cəhd edin." };
-      }
-      if (res.status === 402) {
-        return { ok: false as const, error: "AI krediti bitib. Lovable workspace-də kredit əlavə edin." };
-      }
       if (!res.ok) {
-        const text = await res.text();
-        console.error("AI gateway error:", res.status, text);
-        return { ok: false as const, error: "AI cavab vermədi. Yenidən cəhd edin." };
+        const body = await res.json().catch(() => ({}));
+        const errorCode = body?.error?.code as string | undefined;
+        const errorType = body?.error?.type as string | undefined;
+        console.error("OpenAI error:", res.status, body);
+
+        if (res.status === 401) {
+          return { ok: false as const, error: "API key is invalid." };
+        }
+        if (res.status === 429) {
+          if (errorCode === "insufficient_quota" || errorType === "insufficient_quota") {
+            return { ok: false as const, error: "No credits on the OpenAI account. Add credits at platform.openai.com." };
+          }
+          return { ok: false as const, error: "Too many requests. Please try again in a moment." };
+        }
+        return { ok: false as const, error: `AI did not respond (${res.status}). Please try again.` };
       }
 
       const json = await res.json();
       const content = json?.choices?.[0]?.message?.content as string | undefined;
       if (!content) {
-        return { ok: false as const, error: "Boş cavab gəldi." };
+        return { ok: false as const, error: "Empty response received." };
       }
       return { ok: true as const, content };
     } catch (err) {
       console.error("chat fn error:", err);
-      return { ok: false as const, error: "Şəbəkə xətası baş verdi." };
+      return { ok: false as const, error: "Network error. Please try again." };
     }
   });

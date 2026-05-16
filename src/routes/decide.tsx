@@ -14,19 +14,18 @@ import {
 export const Route = createFileRoute("/decide")({
   head: () => ({
     meta: [
-      { title: "Qərar ver — DealEat Bakı" },
+      { title: "Decide — DealEat Baku" },
       {
         name: "description",
-        content: "Tinder-tipli qərar oyunu — yemək seç, ən ucuz platformadan sifariş et.",
+        content: "Tinder-style food picker — swipe to choose, order on the best deal platform.",
       },
     ],
   }),
   component: DecidePage,
 });
 
-const ROTATION: Platform[] = ["wolt", "bolt", "yango"];
+const ROTATION: Platform[] = ["wolt", "bolt", "yango", "direct"];
 
-// Map of category -> gradient classes (background mood)
 const categoryGradient: Record<string, string> = {
   Burger: "from-amber-400 via-orange-500 to-rose-500",
   Pizza: "from-red-400 via-rose-500 to-orange-500",
@@ -51,12 +50,10 @@ type Card = {
 };
 
 function buildDeck(): Card[] {
-  // For each restaurant pick a random menu item, rotate platform per card.
   const shuffled = [...restaurants].sort(() => Math.random() - 0.5);
   const deck: Card[] = [];
   shuffled.forEach((r, idx) => {
     const platform = ROTATION[idx % ROTATION.length];
-    // Pick first menu item that has that platform price; fallback to any
     const candidates = r.menu.filter((m) => m.prices[platform] != null);
     const item = (candidates.length ? candidates : r.menu)[
       Math.floor(Math.random() * (candidates.length || r.menu.length))
@@ -65,7 +62,6 @@ function buildDeck(): Card[] {
     const price = item.prices[platform] ?? Math.min(...Object.values(item.prices) as number[]);
     const cheapestVal = Math.min(...Object.values(item.prices) as number[]);
     const isCheapest = price === cheapestVal;
-    // Deterministic-ish distance from city center based on coords
     const dx = (r.coords.x - 50) / 10;
     const dy = (r.coords.y - 50) / 10;
     const distanceKm = Math.max(0.4, Math.round(Math.sqrt(dx * dx + dy * dy) * 10) / 10);
@@ -86,7 +82,6 @@ function DecidePage() {
     setExitDir(dir);
     setTimeout(() => {
       if (index + 1 >= deck.length) {
-        // Reshuffle and continue rotation seamlessly
         setDeck(buildDeck());
         setIndex(0);
       } else {
@@ -101,6 +96,7 @@ function DecidePage() {
       wolt: "bg-[color:var(--wolt)]",
       bolt: "bg-[color:var(--bolt)]",
       yango: "bg-[color:var(--yango)]",
+      direct: "bg-[color:var(--direct)]",
     }),
     []
   );
@@ -108,31 +104,33 @@ function DecidePage() {
     wolt: "🔵",
     bolt: "🟢",
     yango: "🔴",
+    direct: "🏠",
   };
 
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
-      <div className="container mx-auto px-4 py-6 md:py-10 max-w-md">
-        <div className="text-center mb-6">
-          <h1 className="font-display font-bold text-3xl flex items-center justify-center gap-2">
-            <Sparkles className="size-6 text-primary" />
-            Qərar ver
+      <div className="container mx-auto px-4 py-4 sm:py-6 md:py-10 max-w-md pb-24 sm:pb-10">
+        <div className="text-center mb-4 sm:mb-6">
+          <h1 className="font-display font-bold text-2xl sm:text-3xl flex items-center justify-center gap-2">
+            <Sparkles className="size-5 sm:size-6 text-primary" />
+            Decide
           </h1>
-          <p className="text-sm text-muted-foreground mt-1">
-            Yemək kartını seç və ya növbətiyə keç
+          <p className="text-xs sm:text-sm text-muted-foreground mt-1">
+            Pick a dish or skip to the next
           </p>
         </div>
 
-        <div className="relative h-[560px]">
+        {/* Card stack — height adapts to available viewport */}
+        <div
+          className="relative"
+          style={{ height: "min(560px, calc(100svh - 280px))" }}
+        >
           {next && (
             <CardView
               key={`next-${index + 1}`}
               card={next}
-              gradient={
-                categoryGradient[next.restaurant.categories[0]] ??
-                "from-orange-400 to-rose-500"
-              }
+              gradient={categoryGradient[next.restaurant.categories[0]] ?? "from-orange-400 to-rose-500"}
               platformBg={platformBg}
               platformEmoji={platformEmoji}
               behind
@@ -142,10 +140,7 @@ function DecidePage() {
             <CardView
               key={`cur-${index}`}
               card={current}
-              gradient={
-                categoryGradient[current.restaurant.categories[0]] ??
-                "from-orange-400 to-rose-500"
-              }
+              gradient={categoryGradient[current.restaurant.categories[0]] ?? "from-orange-400 to-rose-500"}
               platformBg={platformBg}
               platformEmoji={platformEmoji}
               exitDir={exitDir}
@@ -153,22 +148,22 @@ function DecidePage() {
           )}
         </div>
 
-        <div className="flex items-center justify-center gap-6 mt-6">
+        <div className="flex items-center justify-center gap-6 mt-4 sm:mt-6">
           <button
             type="button"
             onClick={() => advance("left")}
-            aria-label="Keç"
-            className="grid place-items-center size-16 rounded-full bg-card border-2 border-border shadow-[var(--shadow-card)] hover:scale-110 active:scale-95 transition"
+            aria-label="Skip"
+            className="grid place-items-center size-14 sm:size-16 rounded-full bg-card border-2 border-border shadow-[var(--shadow-card)] hover:scale-110 active:scale-95 transition"
           >
-            <X className="size-7 text-muted-foreground" />
+            <X className="size-6 sm:size-7 text-muted-foreground" />
           </button>
           <button
             type="button"
             onClick={() => advance("right")}
-            aria-label="Bəyən"
-            className="grid place-items-center size-16 rounded-full bg-gradient-to-br from-rose-500 to-pink-600 text-white shadow-[var(--shadow-glow)] hover:scale-110 active:scale-95 transition"
+            aria-label="Like"
+            className="grid place-items-center size-14 sm:size-16 rounded-full bg-gradient-to-br from-rose-500 to-pink-600 text-white shadow-[var(--shadow-glow)] hover:scale-110 active:scale-95 transition"
           >
-            <Heart className="size-7 fill-white" />
+            <Heart className="size-6 sm:size-7 fill-white" />
           </button>
         </div>
       </div>
@@ -209,9 +204,9 @@ function CardView({
     >
       {/* Hero gradient with emoji */}
       <div
-        className={`relative h-56 bg-gradient-to-br ${gradient} flex items-center justify-center`}
+        className={`relative h-40 sm:h-56 bg-gradient-to-br ${gradient} flex items-center justify-center`}
       >
-        <div className="text-[120px] leading-none drop-shadow-2xl select-none">
+        <div className="text-7xl sm:text-[120px] leading-none drop-shadow-2xl select-none">
           {emoji}
         </div>
         <div className="absolute top-3 right-3 px-2.5 py-1 rounded-full bg-black/30 backdrop-blur text-white text-xs font-medium">
@@ -220,26 +215,26 @@ function CardView({
       </div>
 
       {/* Content */}
-      <div className="p-5 space-y-4">
+      <div className="p-4 sm:p-5 space-y-3 sm:space-y-4">
         <div>
-          <h2 className="font-display font-bold text-2xl leading-tight">
+          <h2 className="font-display font-bold text-xl sm:text-2xl leading-tight">
             {card.item.name}
           </h2>
-          <p className="text-base font-medium text-foreground/80 mt-1">
+          <p className="text-sm font-medium text-foreground/80 mt-0.5">
             {card.restaurant.name}
           </p>
-          <p className="text-sm text-muted-foreground line-clamp-2 mt-1">
+          <p className="text-xs sm:text-sm text-muted-foreground line-clamp-2 mt-1">
             {card.item.description}
           </p>
         </div>
 
-        <div className="flex items-center gap-3 text-sm text-muted-foreground">
+        <div className="flex items-center gap-3 text-xs sm:text-sm text-muted-foreground">
           <span className="inline-flex items-center gap-1">
-            <MapPin className="size-4" /> {card.distanceKm} km
+            <MapPin className="size-3.5" /> {card.distanceKm} km
           </span>
           <span>·</span>
           <span className="inline-flex items-center gap-1">
-            <Star className="size-4 fill-amber-500 text-amber-500" />
+            <Star className="size-3.5 fill-amber-500 text-amber-500" />
             {card.restaurant.rating}
           </span>
         </div>
@@ -250,10 +245,10 @@ function CardView({
           <span>{platformEmoji[card.platform]}</span>
           <span>{meta.label}</span>
           <span>·</span>
-          <span>{card.price.toFixed(2)} AZN</span>
+          <span>₼{card.price.toFixed(2)}</span>
           {card.isCheapest && (
             <span className="ml-1 px-2 py-0.5 rounded-full bg-emerald-500 text-[10px] font-bold tracking-wide">
-              ƏN UCUZ
+              BEST DEAL
             </span>
           )}
         </div>
@@ -262,9 +257,9 @@ function CardView({
           href={meta.url}
           target="_blank"
           rel="noopener noreferrer"
-          className="w-full inline-flex items-center justify-center gap-2 rounded-2xl bg-primary text-primary-foreground font-bold py-4 text-base hover:opacity-90 transition shadow-[var(--shadow-glow)]"
+          className="w-full inline-flex items-center justify-center gap-2 rounded-2xl bg-primary text-primary-foreground font-bold py-3 sm:py-4 text-sm sm:text-base hover:opacity-90 transition shadow-[var(--shadow-glow)]"
         >
-          Sifariş Ver · {card.price.toFixed(2)} AZN
+          Order · ₼{card.price.toFixed(2)}
           <ExternalLink className="size-4" />
         </a>
       </div>

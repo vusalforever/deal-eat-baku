@@ -81,6 +81,7 @@
   --wolt: oklch(0.62 0.18 240);
   --bolt: oklch(0.72 0.18 155);
   --yango: oklch(0.72 0.19 30);
+  --direct: oklch(0.64 0.18 145);
 
   --gradient-hero: linear-gradient(135deg, oklch(0.78 0.18 60) 0%, oklch(0.68 0.21 35) 100%);
   --gradient-warm: linear-gradient(180deg, oklch(0.99 0.015 80) 0%, oklch(0.96 0.04 70) 100%);
@@ -127,7 +128,15 @@
   }
 }
 
-/* Leaflet popup - clean white card */
+/* ── Safe-area utilities for mobile notch/home-bar ── */
+.safe-area-pb {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+.pb-safe {
+  padding-bottom: max(0.5rem, env(safe-area-inset-bottom));
+}
+
+/* ── Leaflet popup - clean white card ── */
 .leaflet-popup-content-wrapper {
   border-radius: 16px !important;
   padding: 8px !important;

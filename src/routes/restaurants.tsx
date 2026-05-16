@@ -23,11 +23,11 @@ export const Route = createFileRoute("/restaurants")({
   }),
   head: () => ({
     meta: [
-      { title: "Xəritə — DealEat Bakı" },
+      { title: "Map — DealEat Baku" },
       {
         name: "description",
         content:
-          "Bakıdakı restoranları interaktiv xəritədə tap və qiymətləri müqayisə et.",
+          "Find restaurants in Baku on an interactive map and compare prices.",
       },
     ],
   }),
@@ -49,7 +49,7 @@ async function geocodeBaku(query: string): Promise<[number, number] | null> {
 
 function MapPage() {
   const { address: addrParam } = Route.useSearch();
-  const [address, setAddress] = useState(addrParam ?? "Bakı, Nəsimi");
+  const [address, setAddress] = useState(addrParam ?? "Baku, Nasimi");
   const [draft, setDraft] = useState(address);
   const [editing, setEditing] = useState(false);
   const [center, setCenter] = useState<[number, number] | undefined>();
@@ -62,29 +62,29 @@ function MapPage() {
       setCenter(result);
       setAddress(q);
       setEditing(false);
-      toast.success(`Yer tapıldı: ${q}`);
+      toast.success(`Location found: ${q}`);
     } else {
-      toast.error("Yer tapılmadı. Başqa ad sınayın.");
+      toast.error("Location not found. Try a different name.");
     }
   };
 
   const handleLocate = () => {
     if (!navigator.geolocation) {
-      toast.error("Brauzeriniz GPS dəstəkləmir.");
+      toast.error("Your browser doesn't support GPS.");
       return;
     }
     setLocating(true);
     navigator.geolocation.getCurrentPosition(
       (pos) => {
         setCenter([pos.coords.latitude, pos.coords.longitude]);
-        setAddress("Mənim yerim");
+        setAddress("My location");
         setEditing(false);
         setLocating(false);
-        toast.success("Yeriniz tapıldı");
+        toast.success("Location found");
       },
       () => {
         setLocating(false);
-        toast.error("Yer alına bilmədi.");
+        toast.error("Could not get your location.");
       },
       { enableHighAccuracy: true, timeout: 10000 }
     );
@@ -108,7 +108,7 @@ function MapPage() {
         />
 
         {/* Floating address bar overlay */}
-        <div className="absolute top-4 left-1/2 -translate-x-1/2 z-[1000] flex flex-wrap items-center justify-center gap-2 px-4 max-w-[95vw]">
+        <div className="absolute top-4 left-1/2 -translate-x-1/2 z-[1000] flex flex-wrap items-center justify-center gap-2 px-3 w-full max-w-lg">
           {!editing ? (
             <button
               type="button"
@@ -119,7 +119,7 @@ function MapPage() {
               className="inline-flex items-center gap-2 rounded-full border border-border bg-card pl-4 pr-3 py-2 text-sm font-medium shadow-[var(--shadow-elevated)] hover:border-primary/40 transition"
             >
               <MapPin className="size-4 text-primary" />
-              <span className="truncate max-w-[50vw]">{address}</span>
+              <span className="truncate max-w-[35vw] sm:max-w-[50vw]">{address}</span>
               <span className="grid place-items-center size-6 rounded-full bg-secondary text-muted-foreground">
                 <Pencil className="size-3" />
               </span>
@@ -137,14 +137,14 @@ function MapPage() {
                 autoFocus
                 value={draft}
                 onChange={(e) => setDraft(e.target.value)}
-                placeholder="Yasamal, Nəsimi, 28 May..."
-                className="bg-transparent outline-none text-sm py-1.5 min-w-[200px]"
+                placeholder="Yasamal, Nasimi, 28 May..."
+                className="bg-transparent outline-none text-sm py-1.5 w-28 sm:w-48 min-w-0"
               />
               <button
                 type="button"
                 onClick={() => setEditing(false)}
                 className="grid place-items-center size-7 rounded-full text-muted-foreground hover:text-foreground"
-                aria-label="Ləğv et"
+                aria-label="Cancel"
               >
                 <X className="size-4" />
               </button>
@@ -152,7 +152,7 @@ function MapPage() {
                 type="submit"
                 className="rounded-full bg-primary text-primary-foreground text-xs font-semibold px-3 py-1.5"
               >
-                Tap
+                Search
               </button>
             </form>
           )}
@@ -167,7 +167,7 @@ function MapPage() {
             ) : (
               <LocateFixed className="size-4" />
             )}
-            Mənim yerim
+            My Location
           </button>
         </div>
       </div>
