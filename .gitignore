@@ -2,6 +2,9 @@
 .env
 .env.*
 
+# Bun lockfile — Lovable uses npm; only package-lock.json should be committed
+bun.lock
+
 # Logs
 logs
 *.log
