@@ -1,6 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
-import { useServerFn } from "@tanstack/react-start";
 import ReactMarkdown from "react-markdown";
 import { Send, RotateCcw, Sparkles, Bot, User as UserIcon } from "lucide-react";
 import { Navbar } from "@/components/Navbar";
@@ -33,7 +32,6 @@ const SUGGESTIONS = [
 ];
 
 function AIPage() {
-  const sendFn = useServerFn(sendChatMessage);
   const [messages, setMessages] = useState<Msg[]>([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
@@ -59,7 +57,7 @@ function AIPage() {
     setInput("");
     setLoading(true);
     try {
-      const res = await sendFn({ data: { messages: next } });
+      const res = await sendChatMessage(next);
       if (res.ok) {
         setMessages((prev) => [...prev, { role: "assistant", content: res.content }]);
       } else {

@@ -1,13 +1,13 @@
 import { useState } from "react";
 import { Clock, Star, MapPin, ExternalLink } from "lucide-react";
-import { computeDealScores, platformMeta, type Restaurant } from "@/data/restaurants";
+import { computeDealScores, getOrderUrl, platformMeta, type Restaurant } from "@/data/restaurants";
 import { RestaurantSheet } from "./RestaurantSheet";
 
 export function RestaurantCard({ restaurant }: { restaurant: Restaurant }) {
   const [open, setOpen] = useState(false);
   const dealScores = computeDealScores(restaurant);
   const bestDeal = dealScores[0];
-  const bestUrl = bestDeal ? platformMeta[bestDeal.platform].url : "#";
+  const bestUrl = bestDeal ? getOrderUrl(restaurant, bestDeal.platform) : "#";
   const bestLabel = bestDeal ? platformMeta[bestDeal.platform].label : "";
 
   return (

@@ -11,10 +11,25 @@ import chicken from "@/assets/dish-chicken.jpg";
 export type Platform = "wolt" | "bolt" | "yango" | "direct";
 
 export const platformMeta: Record<Platform, { label: string; color: string; url: string }> = {
-  wolt: { label: "Wolt", color: "var(--wolt)", url: "https://wolt.com" },
-  bolt: { label: "Bolt Food", color: "var(--bolt)", url: "https://food.bolt.eu" },
-  yango: { label: "Yango Deli", color: "var(--yango)", url: "https://yango.deli" },
+  wolt:   { label: "Wolt",         color: "var(--wolt)",   url: "https://wolt.com/en/aze/baku/restaurants" },
+  bolt:   { label: "Bolt Food",    color: "var(--bolt)",   url: "https://food.bolt.eu/en-US/335-baku" },
+  yango:  { label: "Yango Deli",   color: "var(--yango)",  url: "https://yango.com/en_az/" },
   direct: { label: "Direct Order", color: "var(--direct)", url: "#" },
+};
+
+// Wolt Baku category pages (fallback when no direct restaurant slug is known)
+const woltCategory: Partial<Record<CategoryKey, string>> = {
+  Burger:     "https://wolt.com/en/aze/baku/category/burgers",
+  Pizza:      "https://wolt.com/en/aze/baku/category/pizza",
+  Kabab:      "https://wolt.com/en/aze/baku/category/kebab",
+  Döner:      "https://wolt.com/en/aze/baku/category/doner",
+  Balıq:      "https://wolt.com/en/aze/baku/category/sushi",
+  Qəhvə:     "https://wolt.com/en/aze/baku/category/cafe",
+  Şirniyyat: "https://wolt.com/en/aze/baku/category/desserts",
+  Toyuq:     "https://wolt.com/en/aze/baku/category/fast-food",
+  "Fast Food":"https://wolt.com/en/aze/baku/category/fast-food",
+  Pide:       "https://wolt.com/en/aze/baku/category/doner",
+  Çörək:     "https://wolt.com/en/aze/baku/category/cafe",
 };
 
 export type MenuItem = {
@@ -84,6 +99,12 @@ export type Restaurant = {
   menu: MenuItem[];
   coords: { x: number; y: number };
   latlng: [number, number];
+  /** Wolt Baku restaurant slug for direct deep-link, e.g. "burger-lab" */
+  woltSlug?: string;
+  /** Bolt Food Baku restaurant path for direct deep-link, e.g. "12345-burger-lab" */
+  boltSlug?: string;
+  /** Direct order phone or website URL */
+  directUrl?: string;
 };
 
 export const categoryEmoji: Record<CategoryKey, string> = {
@@ -137,6 +158,7 @@ export const restaurants: Restaurant[] = [
     tagline: "Smashed burgerlər və crinkle fries",
     categories: ["Burger"],
     image: burger,
+    woltSlug: "burger-lab",
     fees: { wolt: 2.5, bolt: 1.7, yango: 2.1, direct: 0.0 },
     popularPrice: { wolt: 13.5, bolt: 9.9, yango: 11.5, direct: 11.0 },
     coords: { x: 55, y: 25 },
@@ -233,6 +255,7 @@ export const restaurants: Restaurant[] = [
     tagline: "Premium kabab və tikə",
     categories: ["Kabab", "Toyuq"],
     image: kebab,
+    woltSlug: "manqal-house",
     fees: { wolt: 2.9, bolt: 2.3, yango: 2.0, direct: 1.2 },
     popularPrice: { wolt: 22.0, bolt: 20.5, yango: 18.9, direct: 20.0 },
     coords: { x: 82, y: 35 },
@@ -685,4 +708,31 @@ export function computeDealScores(restaurant: Restaurant): PlatformDealScore[] {
 
 export function getRestaurant(id: string) {
   return restaurants.find((r) => r.id === id);
+}
+
+/**
+ * Returns the deepest possible order URL for a given restaurant + platform combo.
+ * - Wolt: direct restaurant page if woltSlug is known, else category page, else restaurants listing
+ * - Bolt Food: Baku city page (no public per-restaurant deep links)
+ * - Yango Deli: Yango Baku page
+ * - Direct: restaurant's own site/phone if directUrl set, else "#"
+ */
+export function getOrderUrl(restaurant: Restaurant, platform: Platform): string {
+  switch (platform) {
+    case "wolt": {
+      if (restaurant.woltSlug) {
+        return `https://wolt.com/en/aze/baku/restaurant/${restaurant.woltSlug}`;
+      }
+      const cat = restaurant.categories[0];
+      return (cat && woltCategory[cat]) ?? platformMeta.wolt.url;
+    }
+    case "bolt":
+      return platformMeta.bolt.url;
+    case "yango":
+      return platformMeta.yango.url;
+    case "direct":
+      return restaurant.directUrl ?? "#";
+    default:
+      return "#";
+  }
 }

@@ -10,6 +10,7 @@ import { PriceBadge } from "./PriceBadge";
 import {
   cheapestPlatform,
   computeDealScores,
+  getOrderUrl,
   platformMeta,
   type Platform,
   type Restaurant,
@@ -185,7 +186,7 @@ export function RestaurantSheet({
             {dealScores.map(({ platform, isBest }) => (
               <a
                 key={platform}
-                href={platformMeta[platform].url}
+                href={getOrderUrl(restaurant, platform)}
                 target="_blank"
                 rel="noopener noreferrer"
                 className={`flex items-center justify-between gap-2 rounded-xl px-4 py-3 font-semibold text-sm transition ${

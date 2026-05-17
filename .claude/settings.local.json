@@ -2,7 +2,11 @@
   "permissions": {
     "allow": [
       "Bash(npx tsc *)",
-      "WebSearch"
+      "WebSearch",
+      "Bash(git add *)",
+      "Bash(git commit *)",
+      "WebFetch(domain:wolt.com)",
+      "WebFetch(domain:deli.yango.com)"
     ]
   }
 }

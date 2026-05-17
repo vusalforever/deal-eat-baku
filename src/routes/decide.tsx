@@ -5,6 +5,7 @@ import { Navbar } from "@/components/Navbar";
 import {
   restaurants,
   platformMeta,
+  getOrderUrl,
   categoryEmoji,
   type Platform,
   type Restaurant,
@@ -254,7 +255,7 @@ function CardView({
         </div>
 
         <a
-          href={meta.url}
+          href={getOrderUrl(card.restaurant, card.platform)}
           target="_blank"
           rel="noopener noreferrer"
           className="w-full inline-flex items-center justify-center gap-2 rounded-2xl bg-primary text-primary-foreground font-bold py-3 sm:py-4 text-sm sm:text-base hover:opacity-90 transition shadow-[var(--shadow-glow)]"
